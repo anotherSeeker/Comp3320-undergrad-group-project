@@ -6,7 +6,7 @@
 void skInit(){
     App app;
 
-    if(!app.init()){
+    if(!app.init(800,600,"App")){
         std::cerr << "failed to open app\n";
         return;
     }
