@@ -5,8 +5,14 @@
 #include <vector>
 
 std::vector<vertex> vertices{
-    glm::vec3()
-}
+    vertex{glm::vec3{-0.5, 0.0, 0}},
+    vertex{glm::vec3{ 0.0, 0.5, 0}},
+    vertex{glm::vec3{ 0.5, 0.0, 0}},
+};
+
+std::vector<GLuint> indices{
+    0,1,2
+};
 
 
 bool App::init(int32_t width,int32_t height,const char* title){
@@ -34,6 +40,8 @@ bool App::init(int32_t width,int32_t height,const char* title){
 
 void App::run(){
     std::cout << "running\n";
+
+    Mesh mesh(vertices,indices);
 
     glClearColor(0.39,0.58,0.93,1.0);
 
