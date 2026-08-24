@@ -1,6 +1,6 @@
 #include "mesh.hpp"
 
-Mesh::Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices){
+Mesh::Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices) : vertices(vertices), indices(indices){
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBO);
     glGenBuffers(1,&EBO);
@@ -15,8 +15,10 @@ Mesh::Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices){
     glEnableVertexAttribArray(0);
 }
 
-void Mesh::draw(){
-
+void Mesh::draw(Shader shader){
+    this->bind();
+    shader.use();
+    glDrawElements(GL_STATIC_DRAW,indices.size(),GL_FLOAT,indices.data());
 }
 
 void Mesh::bind(){
