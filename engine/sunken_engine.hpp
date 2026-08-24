@@ -1,4 +1,4 @@
 
 extern "C" {
-    void init();
+    void skInit();
 }

@@ -3,7 +3,7 @@
 
 #include "./core/app.hpp"
 
-void init(){
+void skInit(){
     App app;
 
     if(!app.init()){
