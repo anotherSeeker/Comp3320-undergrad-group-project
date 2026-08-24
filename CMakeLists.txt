@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(sandbox_dir "${CMAKE_SOURCE_DIR}/sandbox")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${sandbox_dir})
 
-add_subdirectory(sandbox)
+add_subdirectory(sandbox) # file for testing, to compile create a folder called 'sandbox' with a CMakeLists.txt inside it
 add_subdirectory(engine)
 
 include(FetchContent)
