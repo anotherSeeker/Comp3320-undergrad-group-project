@@ -17,5 +17,9 @@ class Mesh{
 
     Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices);
     void draw();
+
+    void bind();
+    void unbind();
+
     ~Mesh();
 };

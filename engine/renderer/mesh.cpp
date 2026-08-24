@@ -19,8 +19,21 @@ void Mesh::draw(){
 
 }
 
+void Mesh::bind(){
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+}
+
+void Mesh::unbind(){
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+}
+
 Mesh::~Mesh(){
+    glDeleteVertexArrays(1,&VAO);
     glDeleteBuffers(1,&VBO);
     glDeleteBuffers(1,&EBO);
-    glDeleteVertexArrays(1,&VAO);
+    
 }
