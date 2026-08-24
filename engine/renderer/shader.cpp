@@ -1,5 +1,6 @@
 #include "shader.hpp"
 
+#include <cstring>
 #include <iostream>
 
 Shader::Shader(const char* vertexSource,const char* fragmentSource){
@@ -36,7 +37,7 @@ void Shader::CheckError(GLuint shader,const char* type){
     size_t logSize = 2 << 10;
     char infoLog[logSize]; 
 
-    if(type == "PROGRAM"){
+    if(std::strcmp(type,"PROGRAM") == 0){
         glGetProgramiv(shader,GL_LINK_STATUS,&hasCompiled);
         if(hasCompiled == GL_TRUE) return;
 
