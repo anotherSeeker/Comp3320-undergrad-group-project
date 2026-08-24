@@ -3,7 +3,8 @@
 ## libraries
 openGL
 GLFW
-GLAD
+GLAD2
+GLM
 
 ## tooling
 gnu compiler collection (MINGW64)
