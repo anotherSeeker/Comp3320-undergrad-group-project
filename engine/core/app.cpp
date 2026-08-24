@@ -72,7 +72,7 @@ void App::run(){
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        mesh.draw(shader);
+        renderer.drawMesh(mesh,shader);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
