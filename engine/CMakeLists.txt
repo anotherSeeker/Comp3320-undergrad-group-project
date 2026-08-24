@@ -17,4 +17,4 @@ set_target_properties(sunken_castle PROPERTIES
 )
 
 target_compile_definitions(sunken_castle PRIVATE SANKARA_BUILD_SHARED)
-target_link_libraries(sunken_castle PRIVATE glfw3 opengl32 gdi32)
+target_link_libraries(sunken_castle PRIVATE glfw opengl32 gdi32)

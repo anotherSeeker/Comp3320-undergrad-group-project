@@ -1,5 +1,4 @@
-#include <cstdio>
 
 extern "C" {
-    void test();
+    void init();
 }
