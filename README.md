@@ -1,11 +1,11 @@
 # Comp3320-undergrad-group-project
 
 ## libraries
-openGL
-GLFW
-GLAD2
-GLM
+- openGL
+- GLFW
+- GLAD2
+- GLM
 
 ## tooling
-gnu compiler collection (MINGW64)
-cmake
+- gnu compiler collection (MINGW64)
+- cmake
