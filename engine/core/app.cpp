@@ -17,18 +17,22 @@ std::vector<GLuint> indices{
 };
 
 std::string loadFile(std::string filePath){
-    std::ifstream file{filePath};
+    std::ifstream file(filePath);
     if(!file){
         std::cerr << "cannot load file\n";
         return "";
     }
-    
+
     auto fileSize = file.seekg(0,std::ios::end).tellg();
-    file.seekg(0);
+
+    //Sol: build succeeds .exe launches
+    file.seekg(0, std::ios::beg);
+    //Sol: build succeeeds .exe fails to launch with error "The procedure entry point _ZNSi5seekgESt4fposliE could not be located in the dynamic link library C:/3320-group-project\Comp3320-undergrad-group-project\sandbox\libsunked_castle.dll"
+    //file.seekg(0);
 
     std::string fileContents{};
     fileContents.resize(fileSize);
-    file.read(fileContents.data(),fileSize);
+    file.read(fileContents.data(), fileSize);
 
     return fileContents;
 }
