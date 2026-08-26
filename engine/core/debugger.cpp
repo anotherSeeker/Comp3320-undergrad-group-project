@@ -187,7 +187,7 @@ bool Debugger::checkShaderError(GLuint shader,const char* type){
                   << "┍ LOG [SHADER COMPILE ERROR]" << UNBOLD
                 << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
                 << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,GL_DEBUG_SEVERITY_HIGH) << UNBOLD
-                << "\n┕ " << BOLD << padString("MESSAGE",infoLog) << message << "\n" << UNBOLD;
+                << "\n┕ " << BOLD << padString("MESSAGE",infoLog) << message << UNBOLD;
 
         #else
         std::cout << BOLD 
@@ -195,7 +195,7 @@ bool Debugger::checkShaderError(GLuint shader,const char* type){
                 << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
                 << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << setColour(BLUE,formatSeverity(GL_DEBUG_SOURCE_OTHER)) << UNBOLD
                 << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,formatSeverity(GL_DEBUG_SEVERITY_HIGH)) << UNBOLD
-                << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << infoLog << "\n" << UNBOLD;
+                << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << infoLog << UNBOLD;
 
         #endif
 
@@ -212,7 +212,7 @@ bool Debugger::checkShaderError(GLuint shader,const char* type){
                   << "┍ LOG [SHADER LINKING ERROR]" << UNBOLD
                 << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
                 << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,GL_DEBUG_SEVERITY_HIGH) << UNBOLD
-                << "\n┕ " << BOLD << padString("MESSAGE",infoLog) << message << "\n" << UNBOLD;
+                << "\n┕ " << BOLD << padString("MESSAGE",infoLog) << message << UNBOLD;
 
         #else
         std::cout << BOLD 
@@ -220,7 +220,7 @@ bool Debugger::checkShaderError(GLuint shader,const char* type){
                 << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
                 << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << setColour(BLUE,formatSeverity(GL_DEBUG_SOURCE_OTHER)) << UNBOLD
                 << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,formatSeverity(GL_DEBUG_SEVERITY_HIGH)) << UNBOLD
-                << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << infoLog << "\n" << UNBOLD;
+                << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << infoLog << UNBOLD;
 
         #endif
     }
