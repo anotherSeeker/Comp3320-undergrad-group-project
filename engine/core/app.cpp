@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <format>
 
 std::vector<vertex> vertices{
     vertex{glm::vec3{-0.5, -0.5, 0}},
@@ -24,7 +25,7 @@ std::string loadFile(std::string filePath){
     file.open(filePath);
 
     if(!file.is_open()){
-        std::cerr << "cannot load file\n";
+        Debugger::print(std::format("cannot loadfile {}",filePath));
         return "";
     }
     
