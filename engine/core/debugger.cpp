@@ -50,7 +50,7 @@ std::string formatTime(double time){
 
 size_t Debugger::frames = 0;
 
-void Debugger::Init(){
+void Debugger::init(){
     #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
@@ -59,7 +59,7 @@ void Debugger::Init(){
     glfwWindowHint(GLFW_CONTEXT_DEBUG,GL_TRUE);
     glEnable(GL_DEBUG_OUTPUT);
 
-    glDebugMessageCallback(Debugger::Callback,nullptr);
+    glDebugMessageCallback(Debugger::callback,nullptr);
 }
 
 void Debugger::incrementFrame(){
@@ -113,7 +113,7 @@ std::string Debugger::getSeverityColour(GLenum severity){
     }
 }
 
-void Debugger::Callback(
+void Debugger::callback(
     GLenum source, 
     GLenum type,
     GLuint id,
@@ -130,4 +130,8 @@ void Debugger::Callback(
                     << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << setColour(BLUE,formatSource(source)) << UNBOLD
                     << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
                     << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
+}
+
+void Debugger::print(std::string message){
+
 }

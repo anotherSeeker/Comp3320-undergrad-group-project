@@ -6,8 +6,10 @@
 
 class Debugger{
     public:
-    static void Init();
+    static void init();
     static void incrementFrame();
+
+    static void print(std::string message);
 
     private:
 
@@ -19,7 +21,7 @@ class Debugger{
 
     static std::string getSeverityColour(GLenum severity);
 
-    static void Callback(
+    static void callback(
     GLenum source, 
     GLenum type,
     GLuint id,
