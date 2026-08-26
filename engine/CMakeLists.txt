@@ -3,7 +3,10 @@ set(engine_lib ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(sunken_castle SHARED
     "${engine_lib}/lib/glad/gl.c"
     "${engine_lib}/sunken_engine.cpp"
+
     "${engine_lib}/core/app.cpp"
+    "${engine_lib}/core/debugger.cpp"
+
     "${engine_lib}/renderer/mesh.cpp"
     "${engine_lib}/renderer/shader.cpp"
     "${engine_lib}/renderer/renderer.cpp"
