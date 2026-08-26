@@ -133,5 +133,9 @@ void Debugger::callback(
 }
 
 void Debugger::print(std::string message){
+    double currentTime = glfwGetTime();
 
+    std::cout << BOLD << "┍ LOG [" << formatTime(currentTime) << "][FRAMES: "<< Debugger::frames <<"][MESSAGE]" << UNBOLD
+                    << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(getSeverityColour(GL_DEBUG_SEVERITY_NOTIFICATION),formatSeverity(GL_DEBUG_SEVERITY_NOTIFICATION)) << UNBOLD
+                    << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
 }

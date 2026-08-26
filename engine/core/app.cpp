@@ -49,14 +49,13 @@ void GLAPIENTRY debugCallback(
 
 
 bool App::init(int32_t width,int32_t height,const char* title){
-    std::cout << "init\n";
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,6);
     glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 
     glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
-    
+
     window = glfwCreateWindow(width,height,title,nullptr,nullptr);
 
     if(!window){
@@ -70,15 +69,15 @@ bool App::init(int32_t width,int32_t height,const char* title){
         return false;
     };
 
+    Debugger::init();
+    Debugger::print("init");
     glViewport(0,0,width,height);
-
-    Debugger::Init();
 
     return true;
 }
 
 void App::run(){
-    std::cout << "running\n";
+    Debugger::print("running");
 
     Shader shader(loadFile("../assets/shaders/default.vert"),loadFile("../assets/shaders/default.frag"));
     Mesh mesh(vertices,indices);
@@ -86,7 +85,7 @@ void App::run(){
     glClearColor(0.39,0.58,0.93,1.0);
 
     while(!glfwWindowShouldClose(window)){
-        
+
         Debugger::incrementFrame();
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -99,7 +98,7 @@ void App::run(){
 }
 
 App::~App(){
-    std::cout << "finished\n";
+    Debugger::print("finished");
 
     glfwDestroyWindow(window);
     glfwTerminate();
