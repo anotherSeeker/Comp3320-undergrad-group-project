@@ -10,5 +10,5 @@ this file may seem useless but this is a placeholder until i get an actual comma
 class Renderer{
     private:
     public:
-        void drawMesh(Mesh mesh,Shader shader);
+        void drawMesh(Mesh &mesh,Shader &shader);
 };
