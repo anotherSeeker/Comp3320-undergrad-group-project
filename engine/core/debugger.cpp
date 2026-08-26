@@ -1,6 +1,10 @@
 #include "debugger.hpp"
 #include <iostream>
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 inline constexpr std::string RED = "\x1b[31m";
 inline constexpr std::string ORANGE = "\x1b[38;5;214m";
 inline constexpr std::string YELLOW = "\x1b[93m";
@@ -15,6 +19,11 @@ constexpr std::string SET_COLOUR(std::string colour,std::string message){
 }
 
 void Debugger::Init(){
+    #ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+    #endif
+
     glfwWindowHint(GLFW_CONTEXT_DEBUG,GL_TRUE);
     glEnable(GL_DEBUG_OUTPUT);
 
@@ -78,9 +87,9 @@ void Debugger::Callback(
     const void* userParam
 ){
 
-    std::cout << BOLD << "[LOG]<" << formatType(type) << ">" << UNBOLD
-              << "\n|" << BOLD << "ID:\t\t" << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
-              << "\n|" << BOLD << "SOURCE:\t" << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
-              << "\n|" << BOLD << "SEVERITY:\t" << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
-              << "\n|" << BOLD << "MESSAGE:\t" << message << "\n" << UNBOLD;
+    std::cout << BOLD << "┍ LOG [" << formatType(type) << "]" << UNBOLD
+              << "\n│ " << BOLD << "ID:\t\t" << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
+              << "\n│ " << BOLD << "SOURCE:\t" << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
+              << "\n│ " << BOLD << "SEVERITY:\t" << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
+              << "\n┕ " << BOLD << "MESSAGE:\t" << message << "\n" << UNBOLD;
 }
