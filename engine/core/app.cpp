@@ -19,7 +19,6 @@ std::vector<GLuint> indices{
 
 std::string loadFile(std::string filePath){
     std::ifstream file;
-    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     file.open(filePath);
 
     if(!file.is_open()){
