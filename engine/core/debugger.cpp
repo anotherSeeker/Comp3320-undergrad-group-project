@@ -1,9 +1,13 @@
 #include "debugger.hpp"
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
+
+inline constexpr size_t KEY_WIDTH = 14;
 
 inline constexpr std::string RED = "\x1b[31m";
 inline constexpr std::string ORANGE = "\x1b[38;5;214m";
@@ -16,6 +20,13 @@ inline constexpr std::string UNBOLD = "\x1b[22m";
 
 constexpr std::string SET_COLOUR(std::string colour,std::string message){
     return colour + message + CLEAR;
+}
+
+std::string padString(std::string text,size_t width){
+    std::ostringstream stream;
+    stream << std::left << std::setw(width) << text;
+    
+    return stream.str();
 }
 
 void Debugger::Init(){
@@ -88,8 +99,8 @@ void Debugger::Callback(
 ){
 
     std::cout << BOLD << "┍ LOG [" << formatType(type) << "]" << UNBOLD
-              << "\n│ " << BOLD << "ID:\t\t" << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
-              << "\n│ " << BOLD << "SOURCE:\t" << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
-              << "\n│ " << BOLD << "SEVERITY:\t" << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
-              << "\n┕ " << BOLD << "MESSAGE:\t" << message << "\n" << UNBOLD;
+                    << "\n│ " << BOLD << padString("ID:",KEY_WIDTH) << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
+                    << "\n│ " << BOLD << padString("SOURCE:",KEY_WIDTH) << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
+                    << "\n│ " << BOLD << padString("SEVERITY:",KEY_WIDTH) << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
+                    << "\n┕ " << BOLD << padString("MESSAGE:",KEY_WIDTH) << message << "\n" << UNBOLD;
 }
