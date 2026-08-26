@@ -8,6 +8,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${sandbox_dir})
 add_subdirectory(sandbox) # file for testing, to compile create a folder called 'sandbox' with a CMakeLists.txt inside it
 add_subdirectory(engine)
 
+set(FETCHCONTENT_BASE_DIR "${CMAKE_SOURCE_DIR}/engine/lib/vendor")
+
 include(FetchContent)
 FetchContent_Declare(
     glfw
