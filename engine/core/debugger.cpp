@@ -1,14 +1,18 @@
 #include "debugger.hpp"
 #include <iostream>
-#include <format>
 
-inline constexpr const GLchar* RED = "\x1b[31m";
-inline constexpr const GLchar* ORANGE = "\x1b[38;5;214m";
-inline constexpr const GLchar* YELLOW = "\x1b[33m";
-inline constexpr const GLchar* BLUE = "\x1b[34m";
-inline constexpr const GLchar* CLEAR = "\x1b[0m";
+inline constexpr std::string RED = "\x1b[31m";
+inline constexpr std::string ORANGE = "\x1b[38;5;214m";
+inline constexpr std::string YELLOW = "\x1b[93m";
+inline constexpr std::string BLUE = "\x1b[34m";
+inline constexpr std::string CLEAR = "\x1b[0m";
 
-#define SET_COLOUR(colour,message) colour + message + CLEAR
+inline constexpr std::string BOLD = "\x1b[1m";
+inline constexpr std::string UNBOLD = "\x1b[22m";
+
+constexpr std::string SET_COLOUR(std::string colour,std::string message){
+    return colour + message + CLEAR;
+}
 
 void Debugger::Init(){
     glfwWindowHint(GLFW_CONTEXT_DEBUG,GL_TRUE);
@@ -54,7 +58,7 @@ const GLchar* Debugger::formatSeverity(GLenum severity){
     }
 }
 
-const GLchar* Debugger::getSeverityColour(GLenum severity){
+std::string Debugger::getSeverityColour(GLenum severity){
     switch(severity){
         case GL_DEBUG_SEVERITY_LOW:             return YELLOW;
         case GL_DEBUG_SEVERITY_MEDIUM:          return ORANGE;
@@ -74,16 +78,9 @@ void Debugger::Callback(
     const void* userParam
 ){
 
-    std::string outputHeader = std::format("[LOG] <{}>",formatType(type));
-
-    std::string output = std::format(
-        R"(
-| ID: {}
-| SOURCE: {}
-| SEVERITY: {}
-| MESSAGE: {}
-
-)",id,formatSource(source),formatSeverity(severity),message);
-
-        std::cerr << SET_COLOUR(getSeverityColour(severity),outputHeader + output);
+    std::cout << BOLD << "[LOG]<" << formatType(type) << ">" << UNBOLD
+              << "\n|" << BOLD << "ID:\t\t" << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
+              << "\n|" << BOLD << "SOURCE:\t" << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
+              << "\n|" << BOLD << "SEVERITY:\t" << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
+              << "\n|" << BOLD << "MESSAGE:\t" << message << "\n" << UNBOLD;
 }

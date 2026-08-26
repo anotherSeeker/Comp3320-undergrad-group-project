@@ -2,6 +2,7 @@
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+#include <string>
 
 class Debugger{
     public:
@@ -13,7 +14,7 @@ class Debugger{
     static const GLchar* formatType(GLenum type);
     static const GLchar* formatSeverity(GLenum severity);
 
-    static const GLchar* getSeverityColour(GLenum severity);
+    static std::string getSeverityColour(GLenum severity);
 
     static void Callback(
     GLenum source, 
