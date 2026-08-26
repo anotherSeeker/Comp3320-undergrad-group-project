@@ -3,14 +3,18 @@
 #include <cstring>
 #include <iostream>
 
-Shader::Shader(const char* vertexSource,const char* fragmentSource){
+Shader::Shader(std::string vertexSource,std::string fragmentSource){
+
+    const char* vertexRaw = vertexSource.data();
+    const char* fragmentRaw = fragmentSource.data();
+
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader,1,&vertexSource,nullptr);
+    glShaderSource(vertexShader,1,&vertexRaw,nullptr);
     glCompileShader(vertexShader);
     CheckError(vertexShader,"VERTEX");
 
     GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader,1,&fragmentSource,nullptr);
+    glShaderSource(fragmentShader,1,&fragmentRaw,nullptr);
     glCompileShader(fragmentShader);
     CheckError(fragmentShader,"FRAGMENT");
 
@@ -42,12 +46,12 @@ void Shader::CheckError(GLuint shader,const char* type){
         if(hasCompiled == GL_TRUE) return;
 
         glGetProgramInfoLog(shader,logSize,nullptr,infoLog);
-        std::cerr << "SHADER COMPILE FAILED: " << type << "\n" << infoLog << "\n";
+        std::cerr << "SHADER LINKING FAILED: " << type << "\n" << infoLog << "\n";
     } else {
         glGetShaderiv(shader,GL_COMPILE_STATUS,&hasCompiled);
         if(hasCompiled == GL_TRUE) return;
 
         glGetShaderInfoLog(shader,logSize,nullptr,infoLog);
-        std::cerr << "SHADER LINKING FAILED: " << type << "\n" << infoLog << "\n";
+        std::cerr << "SHADER COMPILE FAILED: " << type << "\n" << infoLog << "\n";
     }
 }

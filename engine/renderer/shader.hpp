@@ -1,5 +1,6 @@
 #pragma once
 #include <glad/gl.h>
+#include <string>
 
 class Shader{
     private:
@@ -9,7 +10,7 @@ class Shader{
 
     public:
 
-    Shader(const char* vertexSource,const char* fragmentSource);
+    Shader(std::string vertexSource,std::string fragmentSource);
 
     void use();
     ~Shader();
