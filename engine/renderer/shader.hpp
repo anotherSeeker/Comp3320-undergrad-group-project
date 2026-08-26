@@ -2,6 +2,8 @@
 #include <glad/gl.h>
 #include <string>
 
+#include <glm/glm.hpp>
+
 class Shader{
     private:
     GLuint id;
@@ -11,5 +13,8 @@ class Shader{
     bool init(std::string vertexSource,std::string fragmentSource);
     void use();
     ~Shader();
+
+    bool SetMat4(const char* uniformName,glm::mat4 value);
+
 
 };

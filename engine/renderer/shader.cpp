@@ -1,5 +1,8 @@
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include "shader.hpp"
 #include "../core/debugger.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 #include <cstring>
 #include <iostream>
@@ -37,4 +40,10 @@ void Shader::use(){
 
 Shader::~Shader(){
     glDeleteProgram(id);
+}
+
+bool Shader::SetMat4(const char* uniformName,glm::mat4 value){
+    glUniformMatrix4fv(glGetUniformLocation(id,uniformName),1,GL_FALSE,glm::value_ptr(value));
+
+    return true;
 }
