@@ -99,8 +99,8 @@ void Debugger::Callback(
 ){
 
     std::cout << BOLD << "┍ LOG [" << formatType(type) << "]" << UNBOLD
-                    << "\n│ " << BOLD << padString("ID:",KEY_WIDTH) << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
-                    << "\n│ " << BOLD << padString("SOURCE:",KEY_WIDTH) << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
-                    << "\n│ " << BOLD << padString("SEVERITY:",KEY_WIDTH) << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
-                    << "\n┕ " << BOLD << padString("MESSAGE:",KEY_WIDTH) << message << "\n" << UNBOLD;
+                    << "\n│ " << BOLD << padString("ID",KEY_WIDTH) << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
+                    << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
+                    << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
+                    << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
 }
