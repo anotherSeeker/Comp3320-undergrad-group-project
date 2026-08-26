@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
+#include <sstream>
 #include <string>
 
 std::vector<vertex> vertices{
@@ -17,20 +18,20 @@ std::vector<GLuint> indices{
 };
 
 std::string loadFile(std::string filePath){
-    std::ifstream file{filePath};
-    if(!file){
+    std::ifstream file;
+    file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    file.open(filePath);
+
+    if(!file.is_open()){
         std::cerr << "cannot load file\n";
         return "";
     }
     
-    auto fileSize = file.seekg(0,std::ios::end).tellg();
-    file.seekg(0);
+    std::stringstream stream;
+    stream << file.rdbuf();
+    file.close();
 
-    std::string fileContents{};
-    fileContents.resize(fileSize);
-    file.read(fileContents.data(),fileSize);
-
-    return fileContents;
+    return stream.str();
 }
 
 bool App::init(int32_t width,int32_t height,const char* title){
@@ -62,7 +63,7 @@ bool App::init(int32_t width,int32_t height,const char* title){
 void App::run(){
     std::cout << "running\n";
 
-    Shader shader(loadFile("../assets/shaders/default.vert").data(),loadFile("../assets/shaders/default.frag").data());
+    Shader shader(loadFile("../assets/shaders/default.vert"),loadFile("../assets/shaders/default.frag"));
     Mesh mesh(vertices,indices);
 
     glClearColor(0.39,0.58,0.93,1.0);
