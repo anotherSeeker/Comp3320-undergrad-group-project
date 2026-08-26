@@ -16,6 +16,10 @@ FetchContent_Declare(
     URL https://github.com/glfw/glfw/archive/refs/tags/3.5.1.zip
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "")
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "")
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "")
+set(GLFW_BUILD_DX11 OFF CACHE BOOL "")
 
 FetchContent_Declare(
     glm
