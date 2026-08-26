@@ -87,7 +87,7 @@ void App::run(){
 
     while(!glfwWindowShouldClose(window)){
         
-
+        Debugger::incrementFrame();
         glClear(GL_COLOR_BUFFER_BIT);
 
         renderer.drawMesh(mesh,shader);

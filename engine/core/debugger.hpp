@@ -7,8 +7,11 @@
 class Debugger{
     public:
     static void Init();
+    static void incrementFrame();
 
     private:
+
+    static size_t frames;
 
     static const GLchar* formatSource(GLenum source);
     static const GLchar* formatType(GLenum type);

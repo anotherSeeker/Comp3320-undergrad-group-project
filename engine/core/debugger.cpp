@@ -7,6 +7,8 @@
 #include <windows.h>
 #endif
 
+// constants
+
 inline constexpr size_t KEY_WIDTH = 14;
 
 inline constexpr std::string RED = "\x1b[31m";
@@ -18,7 +20,9 @@ inline constexpr std::string CLEAR = "\x1b[0m";
 inline constexpr std::string BOLD = "\x1b[1m";
 inline constexpr std::string UNBOLD = "\x1b[22m";
 
-constexpr std::string SET_COLOUR(std::string colour,std::string message){
+// utility
+
+constexpr std::string setColour(std::string colour,std::string message){
     return colour + message + CLEAR;
 }
 
@@ -28,6 +32,23 @@ std::string padString(std::string text,size_t width){
     
     return stream.str();
 }
+
+std::string formatTime(double time){
+    std::ostringstream stream;
+    int minutes = static_cast<int>(time) / 60;
+    int seconds = static_cast<int>(time) % 60;
+    int milliseconds = static_cast<int>((time - static_cast<double>(seconds) )* 1000);
+
+    stream << std::setfill('0') << std::right << std::setw(3) << minutes << ":" 
+           << std::right << std::setw(2) << seconds << ":" 
+           << std::right << std::setw(3) << milliseconds;
+
+    return stream.str();
+}
+
+// methods
+
+size_t Debugger::frames = 0;
 
 void Debugger::Init(){
     #ifdef _WIN32
@@ -39,6 +60,10 @@ void Debugger::Init(){
     glEnable(GL_DEBUG_OUTPUT);
 
     glDebugMessageCallback(Debugger::Callback,nullptr);
+}
+
+void Debugger::incrementFrame(){
+    Debugger::frames += 1;
 }
 
 const GLchar* Debugger::formatSource(GLenum source){
@@ -98,9 +123,11 @@ void Debugger::Callback(
     const void* userParam
 ){
 
-    std::cout << BOLD << "┍ LOG [" << formatType(type) << "]" << UNBOLD
-                    << "\n│ " << BOLD << padString("ID",KEY_WIDTH) << SET_COLOUR(YELLOW,std::to_string(id)) << UNBOLD
-                    << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << SET_COLOUR(BLUE,formatSource(source)) << UNBOLD
-                    << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << SET_COLOUR(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
+    double currentTime = glfwGetTime();
+
+    std::cout << BOLD << "┍ LOG [" << formatTime(currentTime) << "][FRAMES: "<< Debugger::frames <<"][" << formatType(type) << "]" << UNBOLD
+                    << "\n│ " << BOLD << padString("ID",KEY_WIDTH) << setColour(YELLOW,std::to_string(id)) << UNBOLD
+                    << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << setColour(BLUE,formatSource(source)) << UNBOLD
+                    << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
                     << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
 }
