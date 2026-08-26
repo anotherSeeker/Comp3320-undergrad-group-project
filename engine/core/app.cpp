@@ -80,8 +80,12 @@ bool App::init(int32_t width,int32_t height,const char* title){
 void App::run(){
     Debugger::print("running");
 
-    Shader shader(loadFile("../assets/shaders/default.vert"),loadFile("../assets/shaders/default.frag"));
+    Shader shader;
     Mesh mesh(vertices,indices);
+
+    if(!shader.init(loadFile("../assets/shaders/default.vert"),loadFile("../assets/shaders/default.frag"))){
+        return;
+    }
 
     glClearColor(0.39,0.58,0.93,1.0);
 
