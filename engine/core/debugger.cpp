@@ -2,6 +2,14 @@
 #include <iostream>
 #include <format>
 
+inline constexpr const GLchar* RED = "\x1b[31m";
+inline constexpr const GLchar* ORANGE = "\x1b[38;5;214m";
+inline constexpr const GLchar* YELLOW = "\x1b[33m";
+inline constexpr const GLchar* BLUE = "\x1b[34m";
+inline constexpr const GLchar* CLEAR = "\x1b[0m";
+
+#define SET_COLOUR(colour,message) colour + message + CLEAR
+
 void Debugger::Init(){
     glfwWindowHint(GLFW_CONTEXT_DEBUG,GL_TRUE);
     glEnable(GL_DEBUG_OUTPUT);
@@ -46,6 +54,15 @@ const GLchar* Debugger::formatSeverity(GLenum severity){
     }
 }
 
+const GLchar* Debugger::getSeverityColour(GLenum severity){
+    switch(severity){
+        case GL_DEBUG_SEVERITY_LOW:             return YELLOW;
+        case GL_DEBUG_SEVERITY_MEDIUM:          return ORANGE;
+        case GL_DEBUG_SEVERITY_HIGH:            return RED;
+        case GL_DEBUG_SEVERITY_NOTIFICATION:    return BLUE;
+        default:                                return BLUE;
+    }
+}
 
 void Debugger::Callback(
     GLenum source, 
@@ -57,14 +74,16 @@ void Debugger::Callback(
     const void* userParam
 ){
 
+    std::string outputHeader = std::format("[LOG] <{}>",formatType(type));
+
     std::string output = std::format(
-        R"([LOG] <{}>
+        R"(
 | ID: {}
 | SOURCE: {}
 | SEVERITY: {}
 | MESSAGE: {}
 
-)",formatType(type),id,formatSource(source),formatSeverity(severity),message);
+)",id,formatSource(source),formatSeverity(severity),message);
 
-        std::cerr << output;
+        std::cerr << SET_COLOUR(getSeverityColour(severity),outputHeader + output);
 }

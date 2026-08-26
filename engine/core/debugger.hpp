@@ -8,10 +8,12 @@ class Debugger{
     static void Init();
 
     private:
-    
+
     static const GLchar* formatSource(GLenum source);
     static const GLchar* formatType(GLenum type);
     static const GLchar* formatSeverity(GLenum severity);
+
+    static const GLchar* getSeverityColour(GLenum severity);
 
     static void Callback(
     GLenum source, 
