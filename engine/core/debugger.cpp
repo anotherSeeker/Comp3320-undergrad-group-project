@@ -1,4 +1,5 @@
 #include "debugger.hpp"
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -56,10 +57,14 @@ void Debugger::init(){
     SetConsoleCP(CP_UTF8);
     #endif
 
+    #if SK_BUILD != SK_RELEASE
+
     glfwWindowHint(GLFW_CONTEXT_DEBUG,GL_TRUE);
     glEnable(GL_DEBUG_OUTPUT);
-
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(Debugger::callback,nullptr);
+
+    #endif
 }
 
 void Debugger::incrementFrame(){
@@ -125,17 +130,39 @@ void Debugger::callback(
 
     double currentTime = glfwGetTime();
 
+    #if SK_BUILD == SK_DEBUG
+
     std::cout << BOLD << "┍ LOG [" << formatTime(currentTime) << "][FRAMES: "<< Debugger::frames <<"][" << formatType(type) << "]" << UNBOLD
                     << "\n│ " << BOLD << padString("ID",KEY_WIDTH) << setColour(YELLOW,std::to_string(id)) << UNBOLD
                     << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << setColour(BLUE,formatSource(source)) << UNBOLD
                     << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
                     << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
+    #else
+
+    std::cout << BOLD << "┍ LOG [" << formatType(type) << "]" << UNBOLD
+                    << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(getSeverityColour(severity),formatSeverity(severity)) << UNBOLD
+                    << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
+
+    #endif
 }
 
 void Debugger::print(std::string message){
     double currentTime = glfwGetTime();
 
+    #if SK_BUILD == SK_DEBUG
+
     std::cout << BOLD << "┍ LOG [" << formatTime(currentTime) << "][FRAMES: "<< Debugger::frames <<"][MESSAGE]" << UNBOLD
                     << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(getSeverityColour(GL_DEBUG_SEVERITY_NOTIFICATION),formatSeverity(GL_DEBUG_SEVERITY_NOTIFICATION)) << UNBOLD
                     << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
+
+    #elif SK_BUILD == SK_DEV
+    std::cout << BOLD << "┍ LOG [MESSAGE]" << UNBOLD
+                    << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(getSeverityColour(GL_DEBUG_SEVERITY_NOTIFICATION),formatSeverity(GL_DEBUG_SEVERITY_NOTIFICATION)) << UNBOLD
+                    << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << message << "\n" << UNBOLD;
+    #else
+    std::cout << BOLD << "LOG: " << message << UNBOLD << "\n";
+    #endif
+
+
+    
 }
