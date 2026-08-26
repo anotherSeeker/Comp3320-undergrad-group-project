@@ -27,7 +27,12 @@ target_compile_definitions(sunken_castle PRIVATE
     SK_DEV=1
     SK_RELEASE=2
 
-    SK_BUILD=$<IF:$<CONFIG:Debug>,0,$<IF:$<CONFIG:RelWithDebInfo>,1,2>>
+    $<$<CONFIG:Debug>:SK_BUILD=0>
+    $<$<CONFIG:RelWithDebInfo>:SK_BUILD=1>
+    $<$<CONFIG:Release>:SK_BUILD=2>
 )
+
+message(STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+message(STATUS "CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
 
 target_link_libraries(sunken_castle PRIVATE glfw glm::glm opengl32 gdi32)
