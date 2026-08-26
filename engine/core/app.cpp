@@ -33,13 +33,28 @@ std::string loadFile(std::string filePath){
     return stream.str();
 }
 
+void GLAPIENTRY debugCallback(
+    GLenum source, 
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length, const 
+    GLchar* message, 
+    const void* userParam){
+
+    std::cerr << "OpenGL error: " << message << "\n";
+}
+
+
 bool App::init(int32_t width,int32_t height,const char* title){
     std::cout << "init\n";
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,6);
-    glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
     glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
+
+    glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
+    glfwWindowHint(GLFW_CONTEXT_DEBUG,GL_TRUE);
     
     window = glfwCreateWindow(width,height,title,nullptr,nullptr);
 
@@ -55,6 +70,9 @@ bool App::init(int32_t width,int32_t height,const char* title){
     };
 
     glViewport(0,0,width,height);
+    glEnable(GL_DEBUG_OUTPUT);
+
+    glDebugMessageCallback(debugCallback,nullptr);
 
     return true;
 }
