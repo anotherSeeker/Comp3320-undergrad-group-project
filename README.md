@@ -1,4 +1,4 @@
-# Comp3320-undergrad-group-project
+# the sunken castle (Comp3320-undergrad-group-project)
 
 ## libraries
 - openGL (atleast version 4.3 but 4.6 is reccomended)
@@ -12,18 +12,19 @@
 
 ## style guide
 
-- SCREAMING_SNAKE_CASE for constants and macros
-- camelCase for methods, functions, variables and class properties
-- PascalCase for everything else (classes)
+- SCREAMING_SNAKE_CASE for constants and macros.
+- camelCase for methods, functions, variables and class properties.
+- PascalCase for everything else (classes).
 
 ## practices
 
 - Avoid exceptions
     - Exceptions cause memory overhead and introduce hidden control flow.  
-      Instead op for returning booleans and using std::cerr
+      Instead op for returning booleans and using std::cerr.
+    - This doesn't apply for non critical tasks like asset loading.
 
 - Build types
-  - There are 3 cmake presets defined for the engine
-    - debug: for debugging the engine
-    - dev: for fast prototyping and iteration
-    - release: for production
+  - There are 3 cmake presets defined for the engine:
+    - debug: for debugging the engine.
+    - dev: for fast prototyping and iteration.
+    - release: for production.
