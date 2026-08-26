@@ -10,6 +10,7 @@ class Debugger{
     static void incrementFrame();
 
     static void print(std::string message);
+    static bool checkShaderError(GLuint shader,const char* type);
 
     private:
 

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <cstring>
+#include <format>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -162,7 +164,66 @@ void Debugger::print(std::string message){
     #else
     std::cout << BOLD << "LOG: " << message << UNBOLD << "\n";
     #endif
+}
 
+bool Debugger::checkShaderError(GLuint shader,const char* type){
+    double currentTime = glfwGetTime();
 
-    
+    GLint hasCompiled;
+    size_t logSize = 2 << 10;
+    char infoLog[logSize]; 
+
+    if(std::strcmp(type,"PROGRAM") == 0){
+        glGetProgramiv(shader,GL_LINK_STATUS,&hasCompiled);
+        if(hasCompiled == GL_TRUE) return false;
+
+        glGetProgramInfoLog(shader,logSize,nullptr,infoLog);
+
+        #if SK_BUILD == SK_RELEASE
+        return true;
+        #elif SK_BUILD == SK_DEV
+
+        std::cout << BOLD 
+                  << "┍ LOG [SHADER COMPILE ERROR]" << UNBOLD
+                << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
+                << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,GL_DEBUG_SEVERITY_HIGH) << UNBOLD
+                << "\n┕ " << BOLD << padString("MESSAGE",infoLog) << message << "\n" << UNBOLD;
+
+        #else
+        std::cout << BOLD 
+                  << "┍ LOG [" << formatTime(currentTime) << "][FRAMES: "<< Debugger::frames <<"][SHADER COMPILE ERROR]" << UNBOLD
+                << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
+                << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << setColour(BLUE,formatSeverity(GL_DEBUG_SOURCE_OTHER)) << UNBOLD
+                << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,formatSeverity(GL_DEBUG_SEVERITY_HIGH)) << UNBOLD
+                << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << infoLog << "\n" << UNBOLD;
+
+        #endif
+
+    } else {
+        glGetShaderiv(shader,GL_COMPILE_STATUS,&hasCompiled);
+        if(hasCompiled == GL_TRUE) return false;
+
+        glGetShaderInfoLog(shader,logSize,nullptr,infoLog);
+                #if SK_BUILD == SK_RELEASE
+        return true;
+        #elif SK_BUILD == SK_DEV
+
+        std::cout << BOLD 
+                  << "┍ LOG [SHADER LINKING ERROR]" << UNBOLD
+                << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
+                << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,GL_DEBUG_SEVERITY_HIGH) << UNBOLD
+                << "\n┕ " << BOLD << padString("MESSAGE",infoLog) << message << "\n" << UNBOLD;
+
+        #else
+        std::cout << BOLD 
+                  << "┍ LOG [" << formatTime(currentTime) << "][FRAMES: "<< Debugger::frames <<"][SHADER LINKING ERROR]" << UNBOLD
+                << "\n│ " << BOLD << padString("TYPE",KEY_WIDTH) << type << UNBOLD
+                << "\n│ " << BOLD << padString("SOURCE",KEY_WIDTH) << setColour(BLUE,formatSeverity(GL_DEBUG_SOURCE_OTHER)) << UNBOLD
+                << "\n│ " << BOLD << padString("SEVERITY",KEY_WIDTH) << setColour(RED,formatSeverity(GL_DEBUG_SEVERITY_HIGH)) << UNBOLD
+                << "\n┕ " << BOLD << padString("MESSAGE",KEY_WIDTH) << infoLog << "\n" << UNBOLD;
+
+        #endif
+    }
+
+    return true;
 }
