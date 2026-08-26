@@ -1,7 +1,7 @@
 # Comp3320-undergrad-group-project
 
 ## libraries
-- openGL
+- openGL (atleast version 4.3 but 4.6 is reccomended)
 - GLFW
 - GLAD2
 - GLM
