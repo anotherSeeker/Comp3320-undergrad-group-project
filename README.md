@@ -21,3 +21,9 @@
 - Avoid exceptions
     - Exceptions cause memory overhead and introduce hidden control flow.  
       Instead op for returning booleans and using std::cerr
+
+- Build types
+  - There are 3 cmake presets defined for the engine
+    - debug: for debugging the engine
+    - dev: for fast prototyping and iteration
+    - release: for production
