@@ -1,3 +1,5 @@
+#include "debugger.hpp"
+
 #include "./app.hpp"
 #include "renderer/mesh.hpp"
 
@@ -54,7 +56,6 @@ bool App::init(int32_t width,int32_t height,const char* title){
     glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
 
     glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
-    glfwWindowHint(GLFW_CONTEXT_DEBUG,GL_TRUE);
     
     window = glfwCreateWindow(width,height,title,nullptr,nullptr);
 
@@ -70,9 +71,8 @@ bool App::init(int32_t width,int32_t height,const char* title){
     };
 
     glViewport(0,0,width,height);
-    glEnable(GL_DEBUG_OUTPUT);
 
-    glDebugMessageCallback(debugCallback,nullptr);
+    Debugger::Init();
 
     return true;
 }
