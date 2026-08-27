@@ -82,12 +82,15 @@ bool App::init(int32_t width,int32_t height,const char* title){
 void App::run(){
     Debugger::print("running");
 
-    Shader shader;
-    Mesh mesh(vertices,indices);
+    std::shared_ptr<Shader> shader = std::make_shared<Shader>();
+    std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertices,indices);
 
-    if(!shader.init(loadFile("../assets/shaders/default.vert"),loadFile("../assets/shaders/default.frag"))){
+    if(!shader->init(loadFile("../assets/shaders/default.vert"),loadFile("../assets/shaders/default.frag"))){
         return;
     }
+
+    glm::mat4 transform(1);
+    transform = glm::translate(transform,glm::vec3(0.5,0,0));
 
     glClearColor(0.39,0.58,0.93,1.0);
 
@@ -97,7 +100,7 @@ void App::run(){
         
         renderer.begin();
 
-        renderer.submit(mesh,shader);
+        renderer.submit(mesh,shader,transform);
 
         renderer.end();
 
