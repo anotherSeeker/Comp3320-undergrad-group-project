@@ -21,7 +21,7 @@ class Mesh{
     public:
 
     Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices);
-    void draw(Shader shader);
+    void draw(Shader &shader);
 
     void bind();
     void unbind();

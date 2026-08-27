@@ -18,7 +18,7 @@ Mesh::Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices) : vertices(
     glEnableVertexAttribArray(0);
 }
 
-void Mesh::draw(Shader shader){
+void Mesh::draw(Shader &shader){
     this->bind();
     shader.use();
     glDrawElements(GL_TRIANGLES,indices.size(),GL_UNSIGNED_INT,0);
