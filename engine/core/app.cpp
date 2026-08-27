@@ -89,17 +89,6 @@ void App::run(){
         return;
     }
 
-    // btw if the triangle doesn't show up, this is why
-    // im testing uniforms here, you can safely remove this bit if your working on the project
-    //-----------------------------------------------------------------------
-
-    glm::mat4 model;
-    model = glm::rotate(model,glm::radians(0.0f),glm::vec3(0.0f,1.0f,0.0f));
-    shader.use();
-    shader.SetMat4("model",model);
-
-    //-----------------------------------------------------------------------
-
     glClearColor(0.39,0.58,0.93,1.0);
 
     while(!glfwWindowShouldClose(window)){
