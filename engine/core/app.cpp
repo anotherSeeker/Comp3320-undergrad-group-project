@@ -13,13 +13,20 @@
 #include <format>
 
 std::vector<vertex> vertices{
-    vertex{glm::vec3{-0.5, -0.5, 0}},
-    vertex{glm::vec3{ 0.0, 0.5, 0}},
-    vertex{glm::vec3{ 0.5, -0.5, 0}},
+    vertex{glm::vec3{-0.5,  0.0, -0.5}},
+    vertex{glm::vec3{ 0.5,  0.0, -0.5}},
+    vertex{glm::vec3{-0.5,  0.0,  0.5}},
+    vertex{glm::vec3{ 0.5,  0.0,  0.5}},
+    vertex{glm::vec3{ 0.0,  1.0,  0.0}},
 };
 
 std::vector<GLuint> indices{
-    0,1,2
+    0,2,1,
+    1,2,3,
+    0,1,4,
+    1,3,4,
+    3,2,4,
+    2,0,4
 };
 
 std::string loadFile(std::string filePath){
@@ -52,6 +59,9 @@ void GLAPIENTRY debugCallback(
 
 
 bool App::init(int32_t width,int32_t height,const char* title){
+    this->width = width;
+    this->height = height;
+    
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,6);
@@ -90,15 +100,22 @@ void App::run(){
     }
 
     glm::mat4 transform(1);
-    transform = glm::translate(transform,glm::vec3(0.5,0,0));
+    transform = glm::translate(transform,glm::vec3(0,-0.25,0));
+
+    float previous = glfwGetTime();
 
     glClearColor(0.39,0.58,0.93,1.0);
 
     while(!glfwWindowShouldClose(window)){
 
+        float deltaTime = glfwGetTime() - previous;
+        transform = glm::rotate(transform,glm::radians(10.0f * deltaTime),glm::vec3(1.0f,1.0f,0.0f));
+
+        previous = glfwGetTime();
+
         Debugger::incrementFrame();
         
-        renderer.begin();
+        renderer.begin(width,height);
 
         renderer.submit(mesh,shader,transform);
 
