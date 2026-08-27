@@ -94,9 +94,12 @@ void App::run(){
     while(!glfwWindowShouldClose(window)){
 
         Debugger::incrementFrame();
-        glClear(GL_COLOR_BUFFER_BIT);
+        
+        renderer.begin();
 
-        renderer.drawMesh(mesh,shader);
+        renderer.submit(mesh,shader);
+
+        renderer.end();
 
         glfwSwapBuffers(window);
         glfwPollEvents();

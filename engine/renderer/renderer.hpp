@@ -1,14 +1,23 @@
 #pragma once
 
-/*
-this file may seem useless but this is a placeholder until i get an actual command queue going
-*/
+#include <queue>
+#include <glm/glm.hpp>
+#include <glm/matrix.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include "mesh.hpp"
 #include "shader.hpp"
 
+struct RenderCommand{
+
+};
+
 class Renderer{
     private:
+        std::queue<RenderCommand> commandQueue;
     public:
-        void drawMesh(Mesh &mesh,Shader &shader);
+        void begin();
+        void end();
+
+        void submit(Mesh &mesh,Shader &shader);
 };
