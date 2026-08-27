@@ -5,6 +5,8 @@
 #include <glm/matrix.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <glm/gtc/quaternion.hpp>
+
 #include <vector>
 #include <variant>
 #include <memory>
@@ -32,7 +34,7 @@ class Renderer{
     private:
         int width;
         int height;
-        glm::mat4 viewportTransform;
+        glm::mat4 viewportTransform = glm::mat4(1.0f);
         std::vector<RenderCommand> commandQueue;
 
         glm::mat4 computeViewportMatrix();
@@ -42,4 +44,12 @@ class Renderer{
         void end();
 
         void submit(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader,glm::mat4 transform);
+
+        void translateView(glm::vec3 translateBy);
+        void rotateView(glm::quat rotateBy);
+
+        void setViewPosition(glm::vec3 position);
+        void setViewOrientation(glm::quat orientation);
+
+        void viewLookAt(glm::vec3 position, glm::vec3 lookAt);
 };

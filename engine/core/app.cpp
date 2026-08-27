@@ -13,11 +13,11 @@
 #include <format>
 
 std::vector<vertex> vertices{
-    vertex{glm::vec3{-0.5,  0.0, -0.5}},
-    vertex{glm::vec3{ 0.5,  0.0, -0.5}},
-    vertex{glm::vec3{-0.5,  0.0,  0.5}},
-    vertex{glm::vec3{ 0.5,  0.0,  0.5}},
-    vertex{glm::vec3{ 0.0,  1.0,  0.0}},
+    vertex{glm::vec3{-0.5, -0.5, -0.5}},
+    vertex{glm::vec3{ 0.5, -0.5, -0.5}},
+    vertex{glm::vec3{-0.5, -0.5,  0.5}},
+    vertex{glm::vec3{ 0.5, -0.5,  0.5}},
+    vertex{glm::vec3{ 0.0,  0.5,  0.0}},
 };
 
 std::vector<GLuint> indices{
@@ -100,18 +100,21 @@ void App::run(){
     }
 
     glm::mat4 transform(1);
-    transform = glm::translate(transform,glm::vec3(0,-0.25,0));
+    transform = glm::translate(transform,glm::vec3(0,0,0));
 
     float previous = glfwGetTime();
 
     glClearColor(0.39,0.58,0.93,1.0);
 
+    renderer.viewLookAt(glm::vec3(-2,2,-2),glm::vec3(0,0,0));
+
     while(!glfwWindowShouldClose(window)){
 
-        float deltaTime = glfwGetTime() - previous;
-        transform = glm::rotate(transform,glm::radians(10.0f * deltaTime),glm::vec3(1.0f,1.0f,0.0f));
+        float currentTime = glfwGetTime();
+        float deltaTime = currentTime - previous;
+        transform = glm::rotate(transform,glm::radians(50.0f * deltaTime),glm::vec3(0.0f,1.0f,0.0f));
 
-        previous = glfwGetTime();
+        previous = currentTime;
 
         Debugger::incrementFrame();
         
