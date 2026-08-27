@@ -30,9 +30,15 @@ struct RenderCommand{
 
 class Renderer{
     private:
+        int width;
+        int height;
+        glm::mat4 viewportTransform;
         std::vector<RenderCommand> commandQueue;
+
+        glm::mat4 computeViewportMatrix();
+
     public:
-        void begin();
+        void begin(int32_t width,int32_t height);
         void end();
 
         void submit(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader,glm::mat4 transform);
