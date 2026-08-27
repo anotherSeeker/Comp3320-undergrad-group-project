@@ -9,6 +9,9 @@ class App{
     GLFWwindow* window;
     Renderer renderer;
     public:
+    int32_t width;
+    int32_t height;
+
     bool init(int32_t width,int32_t height,const char* title);
     void run();
 
