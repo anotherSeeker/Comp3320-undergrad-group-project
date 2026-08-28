@@ -159,7 +159,7 @@ void App::run(){
 
     glClearColor(0.39,0.58,0.93,1.0);
 
-    renderer.viewLookAt(glm::vec3(-2,2,-2),glm::vec3(0,0,0));
+    renderer.viewLookAt(glm::vec3(0,0,5),glm::vec3(0,0,0));
 
     while(!glfwWindowShouldClose(window.windowObject)){
 
