@@ -36,3 +36,11 @@ void skListen(const char* eventName,int callback){
     if(!EventManager::listen(eventNameString,callback))
         Debugger::print(std::format("Failed to connect to observer {}",eventNameString));
 }
+
+void skMoveView(float x,float y,float z){
+    app.renderer.translateView(glm::vec3(x,y,z));
+}
+
+void skRotateView(float x,float y,float z){
+    app.renderer.rotateView(glm::vec3(x,y,z));
+}
