@@ -5,9 +5,13 @@
 #include "glm/gtx/string_cast.hpp"
 
 glm::mat4 Renderer::computeViewportMatrix(){
-    glm::mat4 projection = glm::perspective(glm::radians(60.0f),(float)width/(float)height,0.1f,100.0f);
+    glm::mat4 view(1.0f);
+    glm::mat4 projection(1.0f);
 
-    return projection * viewportTransform;
+    view = glm::lookAt(viewportPosition,viewportPosition + viewportLookDirection,viewportUp);
+    projection = glm::perspective(glm::radians(60.0f),(float)width/(float)height,0.1f,100.0f);
+
+    return projection * view;
 }
 
 void Renderer::submit(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader,glm::mat4 transform){
@@ -63,28 +67,46 @@ void Renderer::end(){
 }
 
 void Renderer::translateView(glm::vec3 translateBy){
-    viewportTransform = glm::translate(viewportTransform,translateBy);
+    viewportPosition += translateBy;
 }
 
-void Renderer::rotateView(glm::quat rotateBy){
-    glm::mat4 rotationMatrix = glm::mat4_cast(rotateBy);
-    viewportTransform = viewportTransform * rotationMatrix;
+void Renderer::rotateView(glm::vec3 rotateBy){
+    glm::vec3 worldUp = glm::vec3(0,1,0);
+    glm::mat4 rotationMatrix(1.0f);
+
+    glm::mat4 yawRotation = glm::rotate(glm::mat4(1.0f),rotateBy.x,viewportUp);
+    viewportLookDirection = glm::normalize(glm::vec3(yawRotation * glm::vec4(viewportLookDirection,0.0f)));
+
+    glm::vec3 right = glm::normalize(glm::cross(viewportLookDirection,worldUp));
+
+    glm::mat4 pitchRotation = glm::rotate(glm::mat4(1.0f),rotateBy.y,right);
+    viewportLookDirection = glm::normalize(glm::vec3(pitchRotation * glm::vec4(viewportLookDirection,0.0f)));
+    
+    viewportUp = glm::normalize(glm::cross(right,viewportLookDirection));
+
+    Debugger::print(glm::to_string(viewportLookDirection));
 }
 
 void Renderer::setViewPosition(glm::vec3 position){
-    viewportTransform[3] = glm::vec4(position,1.0f);
+    viewportPosition = position;
 }
 
-void Renderer::setViewOrientation(glm::quat orientation){
-    glm::quat normOrientation = glm::normalize(orientation);
+void Renderer::setViewOrientation(glm::vec3 orientation){
+    glm::vec3 worldUp = glm::vec3(0,1,0);
+    glm::mat4 rotationMatrix(1.0f);
 
-    glm::vec3 translation = viewportTransform[3];
+    glm::mat4 yawRotation = glm::rotate(glm::mat4(1.0f),orientation.x,viewportUp);
+    viewportLookDirection = glm::normalize(glm::vec3(yawRotation * glm::vec4(0,0,1,0.0f)));
 
-    glm::mat4 rotationMatrix = glm::mat4_cast(normOrientation);
+    glm::vec3 right = glm::normalize(glm::cross(viewportLookDirection,worldUp));
 
-    viewportTransform = glm::translate(rotationMatrix,translation);
+    glm::mat4 pitchRotation = glm::rotate(glm::mat4(1.0f),orientation.y,right);
+    viewportLookDirection = glm::normalize(glm::vec3(pitchRotation * glm::vec4(viewportLookDirection,0.0f)));
+    
+    viewportUp = glm::normalize(glm::cross(right,viewportLookDirection));
 }
 
 void Renderer::viewLookAt(glm::vec3 position, glm::vec3 lookAt){
-    viewportTransform = glm::lookAt(position,lookAt,glm::vec3(0,1,0));
+    viewportPosition = position;
+    viewportLookDirection = glm::normalize(lookAt - position);
 }

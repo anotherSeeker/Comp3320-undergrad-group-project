@@ -34,7 +34,10 @@ class Renderer{
     private:
         int width;
         int height;
-        glm::mat4 viewportTransform = glm::mat4(1.0f);
+        glm::vec3 viewportPosition = glm::vec3(0,0,0);
+        glm::vec3 viewportLookDirection = glm::vec3(0,0,1);
+        glm::vec3 viewportUp = glm::vec3(0,1,0);
+        
         std::vector<RenderCommand> commandQueue;
 
         glm::mat4 computeViewportMatrix();
@@ -46,10 +49,10 @@ class Renderer{
         void submit(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader,glm::mat4 transform);
 
         void translateView(glm::vec3 translateBy);
-        void rotateView(glm::quat rotateBy);
+        void rotateView(glm::vec3 rotateBy);
 
         void setViewPosition(glm::vec3 position);
-        void setViewOrientation(glm::quat orientation);
+        void setViewOrientation(glm::vec3 orientation);
 
         void viewLookAt(glm::vec3 position, glm::vec3 lookAt);
 };
