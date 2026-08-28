@@ -139,6 +139,8 @@ bool App::init(int32_t width,int32_t height,const char* title){
 
     EventManager::createObserver("WindowResize",6);
 
+    EventManager::createObserver("PreRender",7);
+
     window = {
         .windowObject = windowObject,
         .lastX = 0,
@@ -170,7 +172,7 @@ void App::run(){
     glm::mat4 transform(1);
     transform = glm::translate(transform,glm::vec3(0,0,0));
 
-    float previous = glfwGetTime();
+    double previous = glfwGetTime();
 
     glClearColor(0.39,0.58,0.93,1.0);
 
@@ -178,14 +180,16 @@ void App::run(){
 
     while(!glfwWindowShouldClose(window.windowObject)){
 
-        float currentTime = glfwGetTime();
-        float deltaTime = currentTime - previous;
-        transform = glm::rotate(transform,glm::radians(50.0f * deltaTime),glm::vec3(0.0f,1.0f,0.0f));
+        double currentTime = glfwGetTime();
+        double deltaTime = currentTime - previous;
+        transform = glm::rotate(transform,glm::radians(50.0f * static_cast<float>(deltaTime)),glm::vec3(0.0f,1.0f,0.0f));
 
         previous = currentTime;
 
         Debugger::incrementFrame();
         
+        EventManager::dispatch("PreRender",static_cast<void*>(&deltaTime));
+
         renderer.begin(window.width,window.height);
 
         renderer.submit(mesh,shader,transform);
