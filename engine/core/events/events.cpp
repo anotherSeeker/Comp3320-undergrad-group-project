@@ -21,7 +21,7 @@ bool EventManager::listen(const char* name,uint32_t callback){
     return true;
 }
 
-void EventManager::dispatch(const char* name,uint32_t callback){
+void EventManager::dispatch(const char* name){
     if(!EventManager::observers.contains(name)) return;
 
     Observer &observer = EventManager::observers.at(name);
@@ -30,6 +30,4 @@ void EventManager::dispatch(const char* name,uint32_t callback){
         skEventCallback(*iterator,observer.ID);
         Debugger::print(std::to_string(*iterator));
     }
-
-    observer.callbacks.push_back(callback);
 }

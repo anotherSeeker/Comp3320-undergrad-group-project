@@ -14,9 +14,11 @@ struct Observer{
 };
 
 class EventManager{
-    static std::unordered_map<const char*,Observer> observers;
+    private:
+        static std::unordered_map<const char*,Observer> observers;
 
-    static void createObserver(const char* name,uint32_t ID);
-    static bool listen(const char* name,uint32_t callback);
-    static void dispatch(const char* name,uint32_t callback);
+    public:
+        static void createObserver(const char* name,uint32_t ID);
+        static bool listen(const char* name,uint32_t callback);
+        static void dispatch(const char* name);
 };
