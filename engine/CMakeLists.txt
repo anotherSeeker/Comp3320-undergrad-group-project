@@ -10,6 +10,8 @@ add_library(sunken_castle SHARED
     "${engine_lib}/renderer/mesh.cpp"
     "${engine_lib}/renderer/shader.cpp"
     "${engine_lib}/renderer/renderer.cpp"
+
+    "${engine_lib}/core/events/events.cpp"
 )
 
 target_include_directories(sunken_castle PUBLIC 
