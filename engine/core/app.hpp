@@ -4,9 +4,15 @@
 
 #include "renderer/renderer.hpp"
 
+struct Window{
+    GLFWwindow* windowObject;
+    double lastX = 0;
+    double lastY = 0;
+};
+
 class App{
     private:
-    GLFWwindow* window;
+    Window window;
     Renderer renderer;
     public:
     int32_t width;
