@@ -8,14 +8,14 @@ struct Window{
     GLFWwindow* windowObject;
     double lastX = 0;
     double lastY = 0;
+    int32_t width = 0;
+    int32_t height = 0;
 };
 
 class App{
     private:
     Window window;
     public:
-    int32_t width;
-    int32_t height;
 
     Renderer renderer;
 
