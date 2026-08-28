@@ -1,19 +1,23 @@
 #include <sunken_engine.hpp>
 #include <iostream>
+#include <format>
 
 #include "./core/debugger.hpp"
 
 #include "./core/app.hpp"
 #include "./core/events/events.hpp"
 
-void skInit(){
-    App app;
+App app;
 
+bool skInit(){
     if(!app.init(800,600,"App")){
         std::cerr << "failed to open app\n";
-        return;
+        return false;
     }
+    return true;
+}
 
+void skRun(){
     app.run();
 }
 
@@ -23,4 +27,12 @@ void skEventCallback(void (*eventCallback)(int,int)){
 
 void skLog(const char* message){
     Debugger::print(message);
+}
+
+void skListen(const char* eventName,int callback){
+    
+    std::string eventNameString = static_cast<std::string>(eventName);
+
+    if(!EventManager::listen(eventNameString,callback))
+        Debugger::print(std::format("Failed to connect to observer {}",eventNameString));
 }
