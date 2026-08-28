@@ -46,18 +46,21 @@ std::string loadFile(std::string filePath){
     return stream.str();
 }
 
-void GLAPIENTRY debugCallback(
-    GLenum source, 
-    GLenum type,
-    GLuint id,
-    GLenum severity,
-    GLsizei length, const 
-    GLchar* message, 
-    const void* userParam){
 
-    std::cerr << "OpenGL error: " << message << "\n";
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+    switch (action)
+    {
+    case GLFW_PRESS:
+         EventManager::dispatch("KeyPress",static_cast<void*>(&key));
+        break;
+    case GLFW_RELEASE:
+         EventManager::dispatch("KeyLifted",static_cast<void*>(&key));
+        break;
+    
+    default:
+        break;
+    }
 }
-
 
 bool App::init(int32_t width,int32_t height,const char* title){
     this->width = width;
@@ -87,7 +90,10 @@ bool App::init(int32_t width,int32_t height,const char* title){
     Debugger::print("init");
     glViewport(0,0,width,height);
 
-    EventManager::createObserver("testing",1);
+    EventManager::createObserver("KeyPress",1);
+    EventManager::createObserver("KeyLifted",2);
+
+    glfwSetKeyCallback(window,keyCallback);
 
     return true;
 }
@@ -112,8 +118,6 @@ void App::run(){
     renderer.viewLookAt(glm::vec3(-2,2,-2),glm::vec3(0,0,0));
 
     while(!glfwWindowShouldClose(window)){
-
-        EventManager::dispatch("testing");
 
         float currentTime = glfwGetTime();
         float deltaTime = currentTime - previous;
