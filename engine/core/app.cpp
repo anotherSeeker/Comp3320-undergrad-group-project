@@ -1,4 +1,5 @@
 #include "debugger.hpp"
+#include "events/events.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -86,6 +87,8 @@ bool App::init(int32_t width,int32_t height,const char* title){
     Debugger::print("init");
     glViewport(0,0,width,height);
 
+    EventManager::createObserver("testing",1);
+
     return true;
 }
 
@@ -109,6 +112,8 @@ void App::run(){
     renderer.viewLookAt(glm::vec3(-2,2,-2),glm::vec3(0,0,0));
 
     while(!glfwWindowShouldClose(window)){
+
+        EventManager::dispatch("testing");
 
         float currentTime = glfwGetTime();
         float deltaTime = currentTime - previous;
