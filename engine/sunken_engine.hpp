@@ -1,3 +1,4 @@
+#include "./core/events/event_structs.hpp"
 
 extern "C" {
     bool skInit();
