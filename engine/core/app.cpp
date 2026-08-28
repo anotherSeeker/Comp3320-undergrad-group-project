@@ -51,15 +51,31 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
     switch (action)
     {
     case GLFW_PRESS:
-         EventManager::dispatch("KeyPress",static_cast<void*>(&key));
+        EventManager::dispatch("KeyPress",static_cast<void*>(&key));
         break;
     case GLFW_RELEASE:
-         EventManager::dispatch("KeyLifted",static_cast<void*>(&key));
+        EventManager::dispatch("KeyLifted",static_cast<void*>(&key));
         break;
     
     default:
         break;
     }
+}
+
+void mouseClickCallback(GLFWwindow* windowObject, int button, int action, int mods){
+    Window *window = static_cast<Window*>(glfwGetWindowUserPointer(windowObject));
+
+    if(action == GLFW_PRESS){
+        glfwGetCursorPos(windowObject,&window->lastX,&window->lastY);
+        
+        EventManager::dispatch("MousePress",static_cast<void*>(&button));
+    } else if(action == GLFW_RELEASE) {
+        window->lastX = 0;
+        window->lastY = 0;
+
+        EventManager::dispatch("MouseLifted",static_cast<void*>(&button));
+    }
+
 }
 
 bool App::init(int32_t width,int32_t height,const char* title){
@@ -73,14 +89,14 @@ bool App::init(int32_t width,int32_t height,const char* title){
 
     glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
 
-    window = glfwCreateWindow(width,height,title,nullptr,nullptr);
+    GLFWwindow* windowObject = glfwCreateWindow(width,height,title,nullptr,nullptr);
 
-    if(!window){
+    if(!windowObject){
         std::cerr << "failed to create window\n";
         return false;
     }
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(windowObject);
     if(!gladLoadGL(glfwGetProcAddress)){
         std::cerr << "failed to load openGL pointers with glad\n";
         return false;
@@ -92,8 +108,19 @@ bool App::init(int32_t width,int32_t height,const char* title){
 
     EventManager::createObserver("KeyPress",1);
     EventManager::createObserver("KeyLifted",2);
+    EventManager::createObserver("MousePress",3);
+    EventManager::createObserver("MouseLifted",4);
 
-    glfwSetKeyCallback(window,keyCallback);
+    window = {
+        .windowObject = windowObject,
+        .lastX = 0,
+        .lastY = 0,
+    };
+
+    glfwSetWindowUserPointer(window.windowObject,&window);
+
+    glfwSetKeyCallback(windowObject,keyCallback);
+    glfwSetMouseButtonCallback(windowObject,mouseClickCallback);
 
     return true;
 }
@@ -117,7 +144,7 @@ void App::run(){
 
     renderer.viewLookAt(glm::vec3(-2,2,-2),glm::vec3(0,0,0));
 
-    while(!glfwWindowShouldClose(window)){
+    while(!glfwWindowShouldClose(window.windowObject)){
 
         float currentTime = glfwGetTime();
         float deltaTime = currentTime - previous;
@@ -133,7 +160,7 @@ void App::run(){
 
         renderer.end();
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(window.windowObject);
         glfwPollEvents();
         
     }
@@ -142,6 +169,6 @@ void App::run(){
 App::~App(){
     Debugger::print("finished");
 
-    glfwDestroyWindow(window);
+    glfwDestroyWindow(window.windowObject);
     glfwTerminate();
 }
