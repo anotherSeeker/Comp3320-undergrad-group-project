@@ -1,7 +1,10 @@
 #include <sunken_engine.hpp>
 #include <iostream>
 
+#include "./core/debugger.hpp"
+
 #include "./core/app.hpp"
+#include "./core/events/events.hpp"
 
 void skInit(){
     App app;
@@ -12,4 +15,12 @@ void skInit(){
     }
 
     app.run();
+}
+
+void skEventCallback(void (*eventCallback)(int,int)){
+    EventManager::eventCallback = eventCallback;
+}
+
+void skLog(const char* message){
+    Debugger::print(message);
 }

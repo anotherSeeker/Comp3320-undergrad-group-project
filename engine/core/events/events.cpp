@@ -2,6 +2,9 @@
 #include "../../sunken_engine.hpp"
 #include "../debugger.hpp"
 
+std::unordered_map<const char*,Observer> EventManager::observers = {};
+void (*EventManager::eventCallback)(int,int) = nullptr;
+
 void EventManager::createObserver(const char* name,uint32_t ID){
     Observer observer = {
         .callbacks = std::list<uint32_t>(),
@@ -27,7 +30,6 @@ void EventManager::dispatch(const char* name){
     Observer &observer = EventManager::observers.at(name);
 
     for(std::list<uint32_t>::iterator iterator = observer.callbacks.begin(); iterator != observer.callbacks.end();iterator++){
-        skEventCallback(*iterator,observer.ID);
-        Debugger::print(std::to_string(*iterator));
+        EventManager::eventCallback(*iterator,observer.ID);
     }
 }

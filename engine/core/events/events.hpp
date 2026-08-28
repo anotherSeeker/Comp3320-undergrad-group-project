@@ -21,4 +21,6 @@ class EventManager{
         static void createObserver(const char* name,uint32_t ID);
         static bool listen(const char* name,uint32_t callback);
         static void dispatch(const char* name);
+
+        static void (*eventCallback)(int,int);
 };
