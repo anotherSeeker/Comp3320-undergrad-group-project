@@ -6,3 +6,8 @@ struct SK_MOUSE_MOVE_EVENT{
     double deltaX;
     double deltaY;
 };
+
+struct SK_WINDOW_RESIZE_EVENT{
+    int width;
+    int height;
+};

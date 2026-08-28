@@ -99,7 +99,12 @@ void windowResizeCallback(GLFWwindow* windowObject,int width,int height){
     window->width = width;
     window->height = height;
 
-    Debugger::print(std::format("{} {}",width,height));
+    SK_WINDOW_RESIZE_EVENT event{
+        .width = width,
+        .height = height,
+    };
+
+    EventManager::dispatch("WindowResize",static_cast<void*>(&event));
 }
 
 bool App::init(int32_t width,int32_t height,const char* title){
