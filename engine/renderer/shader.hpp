@@ -6,10 +6,10 @@
 
 class Shader{
     private:
-    GLuint id;
 
     public:
-
+    GLuint id;
+    
     bool init(std::string vertexSource,std::string fragmentSource);
     void use();
     ~Shader();
