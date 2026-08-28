@@ -93,16 +93,21 @@ void mouseMoveCallback(GLFWwindow* windowObject,double positionX, double positio
     EventManager::dispatch("MouseMove",static_cast<void*>(&event));
 }
 
+void windowResizeCallback(GLFWwindow* windowObject,int width,int height){
+    Window *window = static_cast<Window*>(glfwGetWindowUserPointer(windowObject));
+
+    window->width = width;
+    window->height = height;
+
+    Debugger::print(std::format("{} {}",width,height));
+}
+
 bool App::init(int32_t width,int32_t height,const char* title){
-    this->width = width;
-    this->height = height;
     
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR,4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR,6);
     glfwWindowHint(GLFW_OPENGL_PROFILE,GLFW_OPENGL_CORE_PROFILE);
-
-    glfwWindowHint(GLFW_RESIZABLE,GL_FALSE);
 
     GLFWwindow* windowObject = glfwCreateWindow(width,height,title,nullptr,nullptr);
 
@@ -127,10 +132,14 @@ bool App::init(int32_t width,int32_t height,const char* title){
     EventManager::createObserver("MouseLifted",4);
     EventManager::createObserver("MouseMove",5);
 
+    EventManager::createObserver("WindowResize",6);
+
     window = {
         .windowObject = windowObject,
         .lastX = 0,
         .lastY = 0,
+        .width = width,
+        .height = height,
     };
 
     glfwSetWindowUserPointer(window.windowObject,&window);
@@ -138,6 +147,7 @@ bool App::init(int32_t width,int32_t height,const char* title){
     glfwSetKeyCallback(windowObject,keyCallback);
     glfwSetMouseButtonCallback(windowObject,mouseClickCallback);
     glfwSetCursorPosCallback(windowObject,mouseMoveCallback);
+    glfwSetFramebufferSizeCallback(windowObject,windowResizeCallback);
 
     return true;
 }
@@ -171,7 +181,7 @@ void App::run(){
 
         Debugger::incrementFrame();
         
-        renderer.begin(width,height);
+        renderer.begin(window.width,window.height);
 
         renderer.submit(mesh,shader,transform);
 

@@ -32,6 +32,7 @@ void Renderer::begin(int32_t width,int32_t height){
     this->width = width;
     this->height = height;
     glClear(GL_COLOR_BUFFER_BIT);
+    glViewport(0,0,width,height);
 }
 
 void Renderer::end(){
