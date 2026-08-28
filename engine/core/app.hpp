@@ -13,10 +13,11 @@ struct Window{
 class App{
     private:
     Window window;
-    Renderer renderer;
     public:
     int32_t width;
     int32_t height;
+
+    Renderer renderer;
 
     bool init(int32_t width,int32_t height,const char* title);
     void run();
