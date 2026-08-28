@@ -2,5 +2,5 @@
 extern "C" {
     void skInit();
 
-    void skEventCallback(uint32_t eventID);
+    void skEventCallback(int callback,int eventID);
 }
