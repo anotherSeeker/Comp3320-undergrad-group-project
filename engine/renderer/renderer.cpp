@@ -70,6 +70,14 @@ void Renderer::translateView(glm::vec3 translateBy){
     viewportPosition += translateBy;
 }
 
+void Renderer::moveView(glm::vec3 moveBy){
+    glm::vec3 right = glm::normalize(glm::cross(viewportLookDirection,viewportUp));
+
+    viewportPosition += right * moveBy.x;
+    viewportPosition += viewportUp * moveBy.y;
+    viewportPosition += -viewportLookDirection * moveBy.z;
+}
+
 void Renderer::rotateView(glm::vec3 rotateBy){
     glm::vec3 worldUp = glm::vec3(0,1,0);
     glm::mat4 rotationMatrix(1.0f);

@@ -38,7 +38,7 @@ void skListen(const char* eventName,int callback){
 }
 
 void skMoveView(float x,float y,float z){
-    app.renderer.translateView(glm::vec3(x,y,z));
+    app.renderer.moveView(glm::vec3(x,y,z));
 }
 
 void skRotateView(float x,float y,float z){
