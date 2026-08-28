@@ -1,6 +1,8 @@
 #include "debugger.hpp"
 #include "events/events.hpp"
 
+#include "events/event_structs.hpp"
+
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "./app.hpp"
@@ -66,16 +68,29 @@ void mouseClickCallback(GLFWwindow* windowObject, int button, int action, int mo
     Window *window = static_cast<Window*>(glfwGetWindowUserPointer(windowObject));
 
     if(action == GLFW_PRESS){
-        glfwGetCursorPos(windowObject,&window->lastX,&window->lastY);
         
         EventManager::dispatch("MousePress",static_cast<void*>(&button));
     } else if(action == GLFW_RELEASE) {
-        window->lastX = 0;
-        window->lastY = 0;
-
+        
         EventManager::dispatch("MouseLifted",static_cast<void*>(&button));
     }
 
+}
+
+void mouseMoveCallback(GLFWwindow* windowObject,double positionX, double positionY){
+    Window *window = static_cast<Window*>(glfwGetWindowUserPointer(windowObject));
+
+    SK_MOUSE_MOVE_EVENT event{
+        .mouseX = positionX,
+        .mouseY = positionY,
+        .deltaX = positionX - window->lastX,
+        .deltaY = positionY - window->lastY
+    };
+
+    window->lastX = positionX;
+    window->lastY = positionY;
+
+    EventManager::dispatch("MouseMove",static_cast<void*>(&event));
 }
 
 bool App::init(int32_t width,int32_t height,const char* title){
@@ -110,6 +125,7 @@ bool App::init(int32_t width,int32_t height,const char* title){
     EventManager::createObserver("KeyLifted",2);
     EventManager::createObserver("MousePress",3);
     EventManager::createObserver("MouseLifted",4);
+    EventManager::createObserver("MouseMove",5);
 
     window = {
         .windowObject = windowObject,
@@ -121,6 +137,7 @@ bool App::init(int32_t width,int32_t height,const char* title){
 
     glfwSetKeyCallback(windowObject,keyCallback);
     glfwSetMouseButtonCallback(windowObject,mouseClickCallback);
+    glfwSetCursorPosCallback(windowObject,mouseMoveCallback);
 
     return true;
 }
