@@ -4,6 +4,7 @@
 
 #include <list>
 #include <unordered_map>
+#include <string>
 
 // callbacks are represented as uint32_t as the runtime will keep a list of lua functions
 // the callbacks are just handles to lua functions defined by the runtime
@@ -15,12 +16,13 @@ struct Observer{
 
 class EventManager{
     private:
-        static std::unordered_map<const char*,Observer> observers;
+        static std::unordered_map<std::string,Observer> observers;
 
     public:
-        static void createObserver(const char* name,uint32_t ID);
-        static bool listen(const char* name,uint32_t callback);
-        static void dispatch(const char* name);
+        static void createObserver(std::string name,uint32_t ID);
+        static bool listen(std::string name,uint32_t callback);
+        static void dispatch(std::string name);
 
         static void (*eventCallback)(int,int);
+        static void printObservers();
 };

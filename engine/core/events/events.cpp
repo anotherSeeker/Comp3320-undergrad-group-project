@@ -2,10 +2,10 @@
 #include "../../sunken_engine.hpp"
 #include "../debugger.hpp"
 
-std::unordered_map<const char*,Observer> EventManager::observers = {};
+std::unordered_map<std::string,Observer> EventManager::observers = {};
 void (*EventManager::eventCallback)(int,int) = nullptr;
 
-void EventManager::createObserver(const char* name,uint32_t ID){
+void EventManager::createObserver(std::string name,uint32_t ID){
     Observer observer = {
         .callbacks = std::list<uint32_t>(),
         .ID = ID,
@@ -14,7 +14,7 @@ void EventManager::createObserver(const char* name,uint32_t ID){
     EventManager::observers.try_emplace(name,observer);
 }
 
-bool EventManager::listen(const char* name,uint32_t callback){
+bool EventManager::listen(std::string name,uint32_t callback){
     if(!EventManager::observers.contains(name)) return false;
 
     Observer &observer = EventManager::observers.at(name);
@@ -24,12 +24,18 @@ bool EventManager::listen(const char* name,uint32_t callback){
     return true;
 }
 
-void EventManager::dispatch(const char* name){
+void EventManager::dispatch(std::string name){
     if(!EventManager::observers.contains(name)) return;
 
     Observer &observer = EventManager::observers.at(name);
 
     for(std::list<uint32_t>::iterator iterator = observer.callbacks.begin(); iterator != observer.callbacks.end();iterator++){
         EventManager::eventCallback(*iterator,observer.ID);
+    }
+}
+
+void EventManager::printObservers(){
+    for (const auto& [key,observer] : EventManager::observers){
+        Debugger::print(key);
     }
 }
