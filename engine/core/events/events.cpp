@@ -3,7 +3,7 @@
 #include "../debugger.hpp"
 
 std::unordered_map<std::string,Observer> EventManager::observers = {};
-void (*EventManager::eventCallback)(int,int) = nullptr;
+void (*EventManager::eventCallback)(int,int,void*) = nullptr;
 
 void EventManager::createObserver(std::string name,uint32_t ID){
     Observer observer = {
@@ -24,13 +24,13 @@ bool EventManager::listen(std::string name,uint32_t callback){
     return true;
 }
 
-void EventManager::dispatch(std::string name){
+void EventManager::dispatch(std::string name,void* data){
     if(!EventManager::observers.contains(name)) return;
 
     Observer &observer = EventManager::observers.at(name);
 
     for(std::list<uint32_t>::iterator iterator = observer.callbacks.begin(); iterator != observer.callbacks.end();iterator++){
-        EventManager::eventCallback(*iterator,observer.ID);
+        EventManager::eventCallback(*iterator,observer.ID,data);
     }
 }
 

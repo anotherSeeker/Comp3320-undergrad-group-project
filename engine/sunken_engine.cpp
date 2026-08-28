@@ -21,7 +21,7 @@ void skRun(){
     app.run();
 }
 
-void skEventCallback(void (*eventCallback)(int,int)){
+void skEventCallback(void (*eventCallback)(int,int,void*)){
     EventManager::eventCallback = eventCallback;
 }
 

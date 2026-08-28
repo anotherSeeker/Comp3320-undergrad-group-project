@@ -21,8 +21,8 @@ class EventManager{
     public:
         static void createObserver(std::string name,uint32_t ID);
         static bool listen(std::string name,uint32_t callback);
-        static void dispatch(std::string name);
+        static void dispatch(std::string name,void* data);
 
-        static void (*eventCallback)(int,int);
+        static void (*eventCallback)(int,int,void*);
         static void printObservers();
 };
