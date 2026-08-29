@@ -3,7 +3,7 @@ use std::os::raw::c_char;
 
 type EventCallbackFn = extern "C" fn(i32, i32, *mut ffi::c_void);
 
-#[link(name = "sunked_castle.dll", kind = "raw-dylib")]
+#[link(name = "sunken_castle.dll", kind = "dylib")]
 unsafe extern "C" {
     pub fn skInit() -> bool;
     pub fn skRun();
@@ -22,7 +22,9 @@ fn main() {
         if !skInit() {
             return;
         };
+        let message = ffi::CString::new("hello world").expect("failed to create c string");
 
+        skLog(message.as_ptr());
         skRun();
     }
 }
