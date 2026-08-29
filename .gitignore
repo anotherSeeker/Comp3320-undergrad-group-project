@@ -4,3 +4,5 @@ build
 /engine/lib/vendor
 
 *.dll
+*.a
+target

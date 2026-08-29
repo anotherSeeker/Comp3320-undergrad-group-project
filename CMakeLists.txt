@@ -8,9 +8,11 @@ option(BUILD_SANDBOX "builds the sandbox folder" OFF)
 
 if(BUILD_SANDBOX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${sandbox_dir})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${sandbox_dir})
 add_subdirectory(sandbox) # file for testing, to compile create a folder called 'sandbox' with a CMakeLists.txt inside it
 else()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${runtime_dir})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${runtime_dir})
 endif()
 
 add_subdirectory(engine)
