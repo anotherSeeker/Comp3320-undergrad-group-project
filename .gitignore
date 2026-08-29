@@ -2,3 +2,5 @@ sandbox
 out
 build
 /engine/lib/vendor
+
+*.dll
