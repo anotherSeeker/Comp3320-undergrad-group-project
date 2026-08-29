@@ -17,39 +17,62 @@
         {
             "name": "gcc_mingw64_debug",
             "displayName": "sandbox debug (mingw64)",
-            "inherits": ["gcc_mingw64_base"],
-            "cacheVariables": {"CMAKE_BUILD_TYPE": "Debug"}
+            "inherits": [
+                "gcc_mingw64_base"
+            ],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
         },
         {
             "name": "gcc_mingw64_dev",
             "displayName": "sandbox dev (mingw64)",
-            "inherits": ["gcc_mingw64_base"],
-            "cacheVariables": {"CMAKE_BUILD_TYPE": "RelWithDebInfo"}
+            "inherits": [
+                "gcc_mingw64_base"
+            ],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
         },
         {
             "name": "gcc_mingw64_release",
             "displayName": "sandbox release (mingw64)",
-            "inherits": ["gcc_mingw64_base"],
-            "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"}
+            "inherits": [
+                "gcc_mingw64_base"
+            ],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         },
-
         {
             "name": "gcc_mingw64_debug_runtime",
             "displayName": "runtime debug (mingw64)",
-            "inherits": ["gcc_mingw64_debug"],
-            "cacheVariables": {"BUILD_SANDBOX": "OFF"}
+            "inherits": [
+                "gcc_mingw64_debug"
+            ],
+            "cacheVariables": {
+                "BUILD_SANDBOX": "OFF"
+            }
         },
         {
             "name": "gcc_mingw64_dev_runtime",
             "displayName": "runtime dev (mingw64)",
-            "inherits": ["gcc_mingw64_dev"],
-            "cacheVariables": {"BUILD_SANDBOX": "OFF"}
+            "inherits": [
+                "gcc_mingw64_dev"
+            ],
+            "cacheVariables": {
+                "BUILD_SANDBOX": "OFF"
+            }
         },
         {
             "name": "gcc_mingw64_release_runtime",
             "displayName": "runtime release (mingw64)",
-            "inherits": ["gcc_mingw64_release"],
-            "cacheVariables": {"BUILD_SANDBOX": "OFF"}
+            "inherits": [
+                "gcc_mingw64_release"
+            ],
+            "cacheVariables": {
+                "BUILD_SANDBOX": "OFF"
+            }
         }
     ]
 }

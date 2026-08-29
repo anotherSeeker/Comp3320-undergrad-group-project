@@ -1,20 +1,14 @@
 use std::ffi;
-use std::os::raw::c_char;
 
-type EventCallbackFn = extern "C" fn(i32, i32, *mut ffi::c_void);
+include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
-#[link(name = "sunken_castle.dll", kind = "dylib")]
-unsafe extern "C" {
-    pub fn skInit() -> bool;
-    pub fn skRun();
+extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_void) {
+    let key = unsafe {
+        let key_ptr = data as *const u8 as *const char;
+        *key_ptr
+    };
 
-    pub fn skEventCallback(eventCallback: EventCallbackFn);
-    pub fn skListen(eventName: *const c_char, callback: i32);
-
-    pub fn skLog(message: *const c_char);
-
-    pub fn skMoveView(x: f32, y: f32, z: f32);
-    pub fn skRotateView(x: f32, y: f32, z: f32);
+    println!("{} {} {}", callback, event_id, key)
 }
 
 fn main() {
@@ -22,9 +16,11 @@ fn main() {
         if !skInit() {
             return;
         };
-        let message = ffi::CString::new("hello world").expect("failed to create c string");
+        let eventbinding = ffi::CString::new("KeyPress").unwrap();
 
-        skLog(message.as_ptr());
+        skEventCallback(Some(event_callback));
+
+        skListen(eventbinding.into_raw(), 1);
         skRun();
     }
 }
