@@ -1,4 +1,5 @@
 #include "./core/events/event_structs.hpp"
+#include "./core/events/event_enums.hpp"
 
 extern "C" {
     __declspec(dllexport) bool skInit();

@@ -1,7 +1,7 @@
 #include "debugger.hpp"
 #include "events/events.hpp"
-
 #include "events/event_structs.hpp"
+#include "events/event_enums.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -131,15 +131,15 @@ bool App::init(int32_t width,int32_t height,const char* title){
     Debugger::print("init");
     glViewport(0,0,width,height);
 
-    EventManager::createObserver("KeyPress",1);
-    EventManager::createObserver("KeyLifted",2);
-    EventManager::createObserver("MousePress",3);
-    EventManager::createObserver("MouseLifted",4);
-    EventManager::createObserver("MouseMove",5);
+    EventManager::createObserver("KeyPress",SK_EVENT_KEY_PRESS);
+    EventManager::createObserver("KeyLifted",SK_EVENT_KEY_LIFTED);
+    EventManager::createObserver("MousePress",SK_EVENT_MOUSE_PRESS);
+    EventManager::createObserver("MouseLifted",SK_EVENT_MOUSE_LIFTED);
+    EventManager::createObserver("MouseMove",SK_EVENT_MOUSE_MOVE);
 
-    EventManager::createObserver("WindowResize",6);
+    EventManager::createObserver("WindowResize",SK_EVENT_WINDOW_RESIZE);
 
-    EventManager::createObserver("PreRender",7);
+    EventManager::createObserver("PreRender",SK_EVENT_PRERENDER);
 
     window = {
         .windowObject = windowObject,
