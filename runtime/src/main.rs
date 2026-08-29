@@ -1,3 +1,4 @@
+use mlua::Lua;
 use std::ffi;
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
@@ -11,10 +12,21 @@ extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_voi
     println!("{} {} {}", callback, event_id, key)
 }
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let luau_vm = &Lua::new();
+
+    let chunk = luau_vm.load(
+        r#"
+        const message : string = "hello world"
+    print(message)
+    "#,
+    );
+
+    chunk.exec()?;
+
     unsafe {
         if !skInit() {
-            return;
+            return Ok(());
         };
         let eventbinding = ffi::CString::new("KeyPress").unwrap();
 
@@ -23,4 +35,6 @@ fn main() {
         skListen(eventbinding.into_raw(), 1);
         skRun();
     }
+
+    Ok(())
 }
