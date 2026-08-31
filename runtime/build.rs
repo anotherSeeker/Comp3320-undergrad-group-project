@@ -4,6 +4,7 @@ use std::path::PathBuf;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let bindings = bindgen::Builder::default()
         .header("../engine/sunken_engine.hpp")
+        .prepend_enum_name(false)
         .generate()?;
 
     let out_path = PathBuf::from(env::var("OUT_DIR")?);
