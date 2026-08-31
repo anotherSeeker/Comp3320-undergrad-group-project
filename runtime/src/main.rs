@@ -10,6 +10,7 @@ use std::collections::HashMap;
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
 static LUAU_VM: LazyLock<Lua> = LazyLock::new(|| Lua::new());
+static CALLBACK_COUNT: LazyLock<Mutex<i32>> = LazyLock::new(|| Mutex::new(0));
 
 static CALLBACKS: LazyLock<Mutex<HashMap<i32, mlua::RegistryKey>>> = LazyLock::new(|| {
     let callback_hashmap = HashMap::new();
@@ -48,8 +49,6 @@ fn read_file(path: &str) -> String {
 }
 
 fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
-    let callback_count: i32 = 0;
-
     let chunk = LUAU_VM.load(read_file("./demo_scripts/demo.luau"));
 
     let globals = LUAU_VM.globals();
@@ -80,11 +79,15 @@ fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
         let key = LUAU_VM.create_registry_value(arg_fn)?;
         let mut map = CALLBACKS.lock().unwrap();
 
-        map.insert(callback_count, key);
+        let mut callback_count = CALLBACK_COUNT.lock().unwrap();
+
+        map.insert(*callback_count, key);
         unsafe {
             let eventbinding = ffi::CString::new("KeyPress").unwrap();
-            skListen(eventbinding.as_ptr(), callback_count);
+            skListen(eventbinding.as_ptr(), *callback_count);
         }
+
+        *callback_count += 1;
 
         Ok(())
     })?;
