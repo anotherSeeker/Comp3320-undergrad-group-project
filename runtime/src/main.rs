@@ -20,7 +20,7 @@ static CALLBACKS: LazyLock<Mutex<HashMap<i32, mlua::RegistryKey>>> = LazyLock::n
 extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_void) {
     let map = CALLBACKS.lock().unwrap();
 
-    if event_id as u32 == SK_EVENT_KEY_PRESS {
+    if event_id as u32 == SK_EVENT_KEY_PRESS || event_id as u32 == SK_EVENT_KEY_LIFTED {
         let key = unsafe {
             let key_ptr = data as *const u8;
             *key_ptr
@@ -37,6 +37,23 @@ extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_voi
 
             event_fn.call::<()>(args).expect("Event errored");
         }
+    } else if event_id as u32 == SK_EVENT_PRERENDER {
+        let dt = unsafe {
+            let key_ptr = data as *const f64;
+            *key_ptr
+        };
+
+        if map.contains_key(&callback) {
+            let reg_key = map.get(&callback).unwrap();
+            let event_fn = LUAU_VM
+                .registry_value::<mlua::Function>(reg_key)
+                .expect(format!("Could not find callback for event {}", callback).as_str());
+
+            let mut args = mlua::MultiValue::new();
+            args.push_back(dt.into_lua(&LUAU_VM).unwrap());
+
+            event_fn.call::<()>(args).expect("Event errored");
+        }
     }
 }
 
@@ -46,6 +63,36 @@ fn read_file(path: &str) -> String {
 
     file.read_to_string(&mut contents).unwrap();
     contents
+}
+
+fn register_callback(arg_fn: mlua::Function) -> Result<(), Box<dyn std::error::Error>> {
+    let key = LUAU_VM.create_registry_value(arg_fn)?;
+    let mut map = CALLBACKS.lock().unwrap();
+
+    let callback_count = CALLBACK_COUNT.lock().unwrap();
+
+    map.insert(*callback_count, key);
+
+    Ok(())
+}
+
+fn create_event_fn(event_name: &str) -> Result<mlua::Function, Box<dyn std::error::Error>> {
+    let eventbinding = ffi::CString::new(event_name).unwrap();
+
+    let event_fn = LUAU_VM.create_function(move |_, arg_fn: mlua::Function| {
+        register_callback(arg_fn).unwrap();
+        let mut callback_count = CALLBACK_COUNT.lock().unwrap();
+
+        unsafe {
+            skListen(eventbinding.as_ptr(), *callback_count);
+        }
+
+        *callback_count += 1;
+
+        Ok(())
+    })?;
+
+    Ok(event_fn)
 }
 
 fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
@@ -75,26 +122,20 @@ fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
 
     let input_lib = LUAU_VM.create_table()?;
 
-    let connect_key_press = LUAU_VM.create_function(move |_, arg_fn: mlua::Function| {
-        let key = LUAU_VM.create_registry_value(arg_fn)?;
-        let mut map = CALLBACKS.lock().unwrap();
-
-        let mut callback_count = CALLBACK_COUNT.lock().unwrap();
-
-        map.insert(*callback_count, key);
-        unsafe {
-            let eventbinding = ffi::CString::new("KeyPress").unwrap();
-            skListen(eventbinding.as_ptr(), *callback_count);
-        }
-
-        *callback_count += 1;
-
-        Ok(())
-    })?;
+    let connect_key_press = create_event_fn("KeyPress")?;
+    let connect_key_lifted = create_event_fn("KeyLifted")?;
 
     input_lib.set("connectKeyPress", connect_key_press)?;
+    input_lib.set("connectKeyLifted", connect_key_lifted)?;
 
     globals.set("input", input_lib)?;
+
+    let connect_pre_render = create_event_fn("PreRender")?;
+
+    let runservice_lib = LUAU_VM.create_table()?;
+    runservice_lib.set("connectPreRender", connect_pre_render)?;
+
+    globals.set("runservice", runservice_lib)?;
 
     chunk.exec()?;
 
@@ -106,10 +147,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if !skInit() {
             return Ok(());
         };
-        let eventbinding = ffi::CString::new("KeyPress").unwrap();
 
         skEventCallback(Some(event_callback));
-        skListen(eventbinding.into_raw(), 1);
 
         setup_luau()?;
 

@@ -17,3 +17,11 @@ input.connectKeyPress(function(value: number)
 		camera.move(1, 0, 0)
 	end
 end)
+
+input.connectKeyLifted(function(value: number)
+	print("key lifted")
+end)
+
+runservice.connectPreRender(function(dt: number)
+	print(dt)
+end)

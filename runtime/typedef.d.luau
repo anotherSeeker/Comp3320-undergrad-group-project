@@ -1,11 +1,13 @@
-export type camera = {
+declare camera : {
 	move: (x: number, y: number, z: number) -> (),
 	rotate: (x: number, y: number, z: number) -> (),
 }
 
-export type input = {
-	connectKeyPress: (() -> ()) -> (),
+declare input : {
+	connectKeyPress: ((key : number) -> ()) -> (),
+	connectKeyLifted: ((key : number) -> ()) -> (),
 }
 
-declare camera : camera
-declare input : input
+declare runservice : {
+	connectPreRender: ((dt : number) -> ()) -> (),
+}
