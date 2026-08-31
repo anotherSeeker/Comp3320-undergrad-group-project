@@ -1,3 +1,3 @@
-input.ConnectKeyPress(function()
+input.connectKeyPress(function()
 	print("testing123")
 end)
