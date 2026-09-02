@@ -1,5 +1,5 @@
-const SPEED = 10
-
+const MAX_SPEED = 10
+const MIN_SPEED = 2
 const key_map = {
 	[enum.keycode.W] = false,
 	[enum.keycode.A] = false,
@@ -7,7 +7,11 @@ const key_map = {
 	[enum.keycode.D] = false,
 	[enum.keycode.Q] = false,
 	[enum.keycode.E] = false,
+	[enum.keycode.LEFT_SHIFT] = false,
 }
+
+local mousedown = false
+local speed = MIN_SPEED
 
 input.connectKeyPress(function(keycode: number)
 	if key_map[keycode] ~= nil then
@@ -22,32 +26,32 @@ input.connectKeyLifted(function(keycode: number)
 end)
 
 runservice.connectPreRender(function(dt: number)
-	if key_map["W"] then
-		camera.move(0, 0, -SPEED * dt)
+	speed = key_map[enum.keycode.LEFT_SHIFT] == true and MIN_SPEED or MAX_SPEED
+
+	if key_map[enum.keycode.W] then
+		camera.move(0, 0, -speed * dt)
 	end
 
-	if key_map["S"] then
-		camera.move(0, 0, SPEED * dt)
+	if key_map[enum.keycode.S] then
+		camera.move(0, 0, speed * dt)
 	end
 
-	if key_map["A"] then
-		camera.move(-SPEED * dt, 0, 0)
+	if key_map[enum.keycode.A] then
+		camera.move(-speed * dt, 0, 0)
 	end
 
-	if key_map["D"] then
-		camera.move(SPEED * dt, 0, 0)
+	if key_map[enum.keycode.D] then
+		camera.move(speed * dt, 0, 0)
 	end
 
-	if key_map["Q"] then
-		camera.move(0, SPEED * dt, 0)
+	if key_map[enum.keycode.Q] then
+		camera.move(0, speed * dt, 0)
 	end
 
-	if key_map["E"] then
-		camera.move(0, -SPEED * dt, 0)
+	if key_map[enum.keycode.E] then
+		camera.move(0, -speed * dt, 0)
 	end
 end)
-
-local mousedown = false
 
 input.connectMousePress(function(key: number)
 	if key ~= 1 then

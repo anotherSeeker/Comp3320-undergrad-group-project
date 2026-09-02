@@ -128,6 +128,14 @@ fn create_event_fn(event_name: &str) -> Result<mlua::Function, Box<dyn std::erro
     Ok(event_fn)
 }
 
+fn get_enum_table() -> Result<mlua::Table, mlua::error::Error> {
+    let chunk = LUAU_VM.load(read_file("./enum.luau"));
+
+    let value = chunk.eval::<mlua::Table>()?;
+
+    Ok(value)
+}
+
 fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
     let chunk = LUAU_VM.load(read_file("./demo_scripts/demo.luau"));
 
@@ -168,6 +176,8 @@ fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
     runservice_lib.set("connectPreRender", create_event_fn("PreRender")?)?;
 
     globals.set("runservice", runservice_lib)?;
+
+    globals.set("enum", get_enum_table()?)?;
 
     chunk.exec()?;
 
