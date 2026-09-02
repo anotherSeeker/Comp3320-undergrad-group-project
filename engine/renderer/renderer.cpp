@@ -86,14 +86,13 @@ void Renderer::rotateView(glm::vec3 rotateBy){
     glm::mat4 yawRotation = glm::rotate(glm::mat4(1.0f),rotateBy.x,viewportUp);
     viewportLookDirection = glm::normalize(glm::vec3(yawRotation * glm::vec4(viewportLookDirection,0.0f)));
 
-    glm::vec3 right = glm::normalize(glm::cross(viewportLookDirection,worldUp));
+    glm::vec3 lookXUp = glm::cross(viewportLookDirection,worldUp);
+    glm::vec3 right = glm::length(lookXUp) < 1e-4f ? glm::vec3(1.0f,0.0f,0.0f) : glm::normalize(lookXUp);
 
     glm::mat4 pitchRotation = glm::rotate(glm::mat4(1.0f),rotateBy.y,right);
     viewportLookDirection = glm::normalize(glm::vec3(pitchRotation * glm::vec4(viewportLookDirection,0.0f)));
     
     viewportUp = glm::normalize(glm::cross(right,viewportLookDirection));
-
-    Debugger::print(glm::to_string(viewportLookDirection));
 }
 
 void Renderer::setViewPosition(glm::vec3 position){
@@ -107,7 +106,8 @@ void Renderer::setViewOrientation(glm::vec3 orientation){
     glm::mat4 yawRotation = glm::rotate(glm::mat4(1.0f),orientation.x,viewportUp);
     viewportLookDirection = glm::normalize(glm::vec3(yawRotation * glm::vec4(0,0,1,0.0f)));
 
-    glm::vec3 right = glm::normalize(glm::cross(viewportLookDirection,worldUp));
+    glm::vec3 lookXUp = glm::cross(viewportLookDirection,worldUp);
+    glm::vec3 right = glm::length(lookXUp) < 1e-4f ? glm::vec3(1.0f,0.0f,0.0f) : glm::normalize(lookXUp);
 
     glm::mat4 pitchRotation = glm::rotate(glm::mat4(1.0f),orientation.y,right);
     viewportLookDirection = glm::normalize(glm::vec3(pitchRotation * glm::vec4(viewportLookDirection,0.0f)));
