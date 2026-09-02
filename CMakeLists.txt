@@ -38,8 +38,8 @@ FetchContent_Declare(
 
 FetchContent_Declare(
     EnTT
-    URL https://github.com/skypjack/entt/archive/refs/tags/v4.0.0.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    GIT_REPOSITORY https://github.com/skypjack/entt.git
+    GIT_TAG v4.0.0
 )
 
 FetchContent_MakeAvailable(glfw glm EnTT)
