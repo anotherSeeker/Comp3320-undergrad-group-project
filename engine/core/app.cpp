@@ -172,9 +172,9 @@ void App::run(){
     glm::mat4 transform(1);
     transform = glm::translate(transform,glm::vec3(0,0,0));
 
-    scene.createObject(mesh,shader,transform);
+    auto object = scene.createObject(mesh,shader,transform);
 
-    scene.createObject(mesh,shader,glm::translate(transform,glm::vec3(5,0,0)));
+    scene.setRotation(object,glm::quat(glm::vec3(0,3.149526 /2 ,0)));
 
     double previous = glfwGetTime();
 

@@ -22,3 +22,34 @@ void SceneGraph::submitEntities(Renderer &renderer){
         renderer.submit(meshComp.mesh,meshComp.shader,transformComp.transform);
     });
 }
+
+void SceneGraph::setTransform(entt::entity entity,glm::mat4 transform){
+    if(!ECSregistry.all_of<TransformComponent>(entity)){
+        return;
+    }
+
+    auto &transformComp = ECSregistry.get<TransformComponent>(entity);
+    transformComp.transform = transform;
+}
+
+void SceneGraph::setRotation(entt::entity entity,glm::quat rotation){
+    if(!ECSregistry.all_of<TransformComponent>(entity)){
+        return;
+    }
+
+    auto rotationMatrix = glm::mat4_cast(rotation);
+
+    auto &transformComp = ECSregistry.get<TransformComponent>(entity);
+    transformComp.transform[1] = rotationMatrix[1];
+    transformComp.transform[2] = rotationMatrix[2];
+    transformComp.transform[3] = rotationMatrix[3];
+}
+
+void SceneGraph::setPosition(entt::entity entity,glm::vec3 position){
+    if(!ECSregistry.all_of<TransformComponent>(entity)){
+        return;
+    }
+
+    auto &transformComp = ECSregistry.get<TransformComponent>(entity);
+    transformComp.transform[4] = glm::vec4(position,1);
+}
