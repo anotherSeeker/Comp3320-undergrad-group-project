@@ -20,40 +20,73 @@ static CALLBACKS: LazyLock<Mutex<HashMap<i32, mlua::RegistryKey>>> = LazyLock::n
 extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_void) {
     let map = CALLBACKS.lock().unwrap();
 
+    if !map.contains_key(&callback) {
+        return;
+    }
+
+    let reg_key = map.get(&callback).unwrap();
+    let event_fn = LUAU_VM
+        .registry_value::<mlua::Function>(reg_key)
+        .expect(format!("Could not find callback for event {}", callback).as_str());
+
     if event_id as u32 == SK_EVENT_KEY_PRESS || event_id as u32 == SK_EVENT_KEY_LIFTED {
         let key = unsafe {
-            let key_ptr = data as *const u8;
+            let key_ptr = data as *const u32;
             *key_ptr
         };
 
-        if map.contains_key(&callback) {
-            let reg_key = map.get(&callback).unwrap();
-            let event_fn = LUAU_VM
-                .registry_value::<mlua::Function>(reg_key)
-                .expect(format!("Could not find callback for event {}", callback).as_str());
+        let mut args = mlua::MultiValue::new();
+        args.push_back(key.into_lua(&LUAU_VM).unwrap());
 
-            let mut args = mlua::MultiValue::new();
-            args.push_back(key.into_lua(&LUAU_VM).unwrap());
-
-            event_fn.call::<()>(args).expect("Event errored");
-        }
+        event_fn.call::<()>(args).expect("Event errored");
     } else if event_id as u32 == SK_EVENT_PRERENDER {
         let dt = unsafe {
             let key_ptr = data as *const f64;
             *key_ptr
         };
 
-        if map.contains_key(&callback) {
-            let reg_key = map.get(&callback).unwrap();
-            let event_fn = LUAU_VM
-                .registry_value::<mlua::Function>(reg_key)
-                .expect(format!("Could not find callback for event {}", callback).as_str());
+        let reg_key = map.get(&callback).unwrap();
+        let event_fn = LUAU_VM
+            .registry_value::<mlua::Function>(reg_key)
+            .expect(format!("Could not find callback for event {}", callback).as_str());
 
-            let mut args = mlua::MultiValue::new();
-            args.push_back(dt.into_lua(&LUAU_VM).unwrap());
+        let mut args = mlua::MultiValue::new();
+        args.push_back(dt.into_lua(&LUAU_VM).unwrap());
 
-            event_fn.call::<()>(args).expect("Event errored");
-        }
+        event_fn.call::<()>(args).expect("Event errored");
+    } else if event_id as u32 == SK_EVENT_MOUSE_PRESS || event_id as u32 == SK_EVENT_MOUSE_LIFTED {
+        let mousebutton = unsafe {
+            let key_ptr = data as *const u8;
+            *key_ptr
+        };
+
+        let reg_key = map.get(&callback).unwrap();
+        let event_fn = LUAU_VM
+            .registry_value::<mlua::Function>(reg_key)
+            .expect(format!("Could not find callback for event {}", callback).as_str());
+
+        let mut args = mlua::MultiValue::new();
+        args.push_back(mousebutton.into_lua(&LUAU_VM).unwrap());
+
+        event_fn.call::<()>(args).expect("Event errored");
+    } else if event_id as u32 == SK_EVENT_MOUSE_MOVE {
+        let mouse_data = unsafe {
+            let key_ptr = data as *const SK_MOUSE_MOVE_EVENT;
+            *key_ptr
+        };
+
+        let reg_key = map.get(&callback).unwrap();
+        let event_fn = LUAU_VM
+            .registry_value::<mlua::Function>(reg_key)
+            .expect(format!("Could not find callback for event {}", callback).as_str());
+
+        let mut args = mlua::MultiValue::new();
+        args.push_back(mouse_data.mouseX.into_lua(&LUAU_VM).unwrap());
+        args.push_back(mouse_data.mouseY.into_lua(&LUAU_VM).unwrap());
+        args.push_back(mouse_data.deltaX.into_lua(&LUAU_VM).unwrap());
+        args.push_back(mouse_data.deltaY.into_lua(&LUAU_VM).unwrap());
+
+        event_fn.call::<()>(args).expect("Event errored");
     }
 }
 
@@ -122,18 +155,17 @@ fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
 
     let input_lib = LUAU_VM.create_table()?;
 
-    let connect_key_press = create_event_fn("KeyPress")?;
-    let connect_key_lifted = create_event_fn("KeyLifted")?;
+    input_lib.set("connectKeyPress", create_event_fn("KeyPress")?)?;
+    input_lib.set("connectKeyLifted", create_event_fn("KeyLifted")?)?;
 
-    input_lib.set("connectKeyPress", connect_key_press)?;
-    input_lib.set("connectKeyLifted", connect_key_lifted)?;
+    input_lib.set("connectMousePress", create_event_fn("MousePress")?)?;
+    input_lib.set("connectMouseLifted", create_event_fn("MouseLifted")?)?;
+    input_lib.set("connectMouseMove", create_event_fn("MouseMove")?)?;
 
     globals.set("input", input_lib)?;
 
-    let connect_pre_render = create_event_fn("PreRender")?;
-
     let runservice_lib = LUAU_VM.create_table()?;
-    runservice_lib.set("connectPreRender", connect_pre_render)?;
+    runservice_lib.set("connectPreRender", create_event_fn("PreRender")?)?;
 
     globals.set("runservice", runservice_lib)?;
 
