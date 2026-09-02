@@ -189,12 +189,14 @@ void App::run(){
         Debugger::incrementFrame();
         
         EventManager::dispatch("PreRender",static_cast<void*>(&deltaTime));
+        if(window.width > 0 && window.height > 0){
+            renderer.begin(window.width,window.height);
 
-        renderer.begin(window.width,window.height);
+            renderer.submit(mesh,shader,transform);
 
-        renderer.submit(mesh,shader,transform);
-
-        renderer.end();
+            renderer.end();
+        }
+        
 
         glfwSwapBuffers(window.windowObject);
         glfwPollEvents();
