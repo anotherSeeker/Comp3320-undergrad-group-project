@@ -1,8 +1,7 @@
 #pragma once
 #include <entt/entt.hpp>
 
-#include "../renderer/mesh.hpp"
-#include "../renderer/shader.hpp"
+#include "../renderer/renderer.hpp"
 
 #include <memory>
 
@@ -24,4 +23,5 @@ class SceneGraph{
     ~SceneGraph();
 
     entt::entity createObject(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader,glm::mat4 transform);
+    void submitEntities(Renderer &renderer);
 };

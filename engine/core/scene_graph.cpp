@@ -11,4 +11,14 @@ entt::entity SceneGraph::createObject(std::shared_ptr<Mesh> mesh,std::shared_ptr
 
     ECSregistry.emplace<MeshComponent>(entity,mesh,shader);
     ECSregistry.emplace<TransformComponent>(entity,transform);
+
+    return entity;
+}
+
+void SceneGraph::submitEntities(Renderer &renderer){
+    auto drawable = ECSregistry.view<MeshComponent,TransformComponent>();
+
+    drawable.each([&](const entt::entity entity,MeshComponent meshComp,TransformComponent transformComp){
+        renderer.submit(meshComp.mesh,meshComp.shader,transformComp.transform);
+    });
 }

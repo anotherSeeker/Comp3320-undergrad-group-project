@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "renderer/renderer.hpp"
+#include "scene_graph.hpp"
 
 struct Window{
     GLFWwindow* windowObject;
@@ -15,6 +16,7 @@ struct Window{
 class App{
     private:
     Window window;
+    SceneGraph scene;
     public:
 
     Renderer renderer;

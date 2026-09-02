@@ -172,6 +172,10 @@ void App::run(){
     glm::mat4 transform(1);
     transform = glm::translate(transform,glm::vec3(0,0,0));
 
+    scene.createObject(mesh,shader,transform);
+
+    scene.createObject(mesh,shader,glm::translate(transform,glm::vec3(5,0,0)));
+
     double previous = glfwGetTime();
 
     glClearColor(0.39,0.58,0.93,1.0);
@@ -192,7 +196,7 @@ void App::run(){
         if(window.width > 0 && window.height > 0){
             renderer.begin(window.width,window.height);
 
-            renderer.submit(mesh,shader,transform);
+            scene.submitEntities(renderer);
 
             renderer.end();
         }
