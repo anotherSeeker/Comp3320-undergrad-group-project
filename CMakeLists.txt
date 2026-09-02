@@ -36,4 +36,10 @@ FetchContent_Declare(
     DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 
-FetchContent_MakeAvailable(glfw glm)
+FetchContent_Declare(
+    EnTT
+    URL https://github.com/skypjack/entt/archive/refs/tags/v4.0.0.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+)
+
+FetchContent_MakeAvailable(glfw glm EnTT)

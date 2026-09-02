@@ -37,4 +37,4 @@ target_compile_definitions(sunken_castle PRIVATE
 message(STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 message(STATUS "CMAKE_GENERATOR = ${CMAKE_GENERATOR}")
 
-target_link_libraries(sunken_castle PRIVATE glfw glm::glm opengl32 gdi32)
+target_link_libraries(sunken_castle PRIVATE glfw glm::glm EnTT::EnTT opengl32 gdi32)
