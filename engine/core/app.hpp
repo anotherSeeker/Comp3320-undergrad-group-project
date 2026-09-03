@@ -4,6 +4,7 @@
 
 #include "renderer/renderer.hpp"
 #include "scene_graph.hpp"
+#include "asset_manager.hpp"
 
 struct Window{
     GLFWwindow* windowObject;
@@ -19,6 +20,7 @@ class App{
     SceneGraph scene;
     public:
 
+    AssetManager assetManager;
     Renderer renderer;
 
     bool init(int32_t width,int32_t height,const char* title);

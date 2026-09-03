@@ -7,6 +7,7 @@ add_library(sunken_castle SHARED
     "${engine_lib}/core/app.cpp"
     "${engine_lib}/core/debugger.cpp"
     "${engine_lib}/core/scene_graph.cpp"
+    "${engine_lib}/core/asset_manager.cpp"
 
     "${engine_lib}/renderer/mesh.cpp"
     "${engine_lib}/renderer/shader.cpp"

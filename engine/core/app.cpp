@@ -32,23 +32,6 @@ std::vector<GLuint> indices{
     2,0,4
 };
 
-std::string loadFile(std::string filePath){
-    std::ifstream file;
-    file.open(filePath);
-
-    if(!file.is_open()){
-        Debugger::print(std::format("cannot loadfile {}",filePath));
-        return "";
-    }
-    
-    std::stringstream stream;
-    stream << file.rdbuf();
-    file.close();
-
-    return stream.str();
-}
-
-
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
     switch (action)
     {
@@ -162,19 +145,15 @@ bool App::init(int32_t width,int32_t height,const char* title){
 void App::run(){
     Debugger::print("running");
 
-    std::shared_ptr<Shader> shader = std::make_shared<Shader>();
+    std::shared_ptr<Shader> shader = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
     std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertices,indices);
-
-    if(!shader->init(loadFile("../assets/shaders/default.vert"),loadFile("../assets/shaders/default.frag"))){
-        return;
-    }
 
     glm::mat4 transform(1);
     transform = glm::translate(transform,glm::vec3(0,0,0));
 
     auto object = scene.createObject(mesh,shader,transform);
 
-    scene.setRotation(object,glm::quat(glm::vec3(0,3.149526 /2 ,0)));
+    //scene.setRotation(object,glm::quat(glm::vec3(0,3.149526 /2 ,0)));
 
     double previous = glfwGetTime();
 
