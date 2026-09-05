@@ -6,10 +6,16 @@
 
 #include "shader.hpp"
 
-struct vertex{
+struct Vertex{
     glm::vec3 position{};
     glm::vec3 normal{};
     glm::vec2 UV{};
+
+    bool operator==(const Vertex &other) const{
+        return position == other.position 
+            && normal == other.normal 
+            && UV == other.UV;
+    }
 };
 
 class Mesh{
@@ -17,12 +23,12 @@ class Mesh{
     GLuint VBO;
     GLuint EBO;
 
-    std::vector<vertex> vertices;
+    std::vector<Vertex> vertices;
     std::vector<GLuint> indices;
 
     public:
 
-    Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices);
+    Mesh(std::vector<Vertex> vertices,std::vector<GLuint> indices);
     void draw(Shader &shader);
 
     void bind();
