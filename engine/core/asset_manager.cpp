@@ -1,6 +1,9 @@
 #include "asset_manager.hpp"
 #include "debugger.hpp"
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader/tiny_obj_loader.h>
+
 #include <fstream>
 #include <sstream>
 #include <string>
