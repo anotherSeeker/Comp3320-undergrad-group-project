@@ -15,23 +15,6 @@
 #include <string>
 #include <format>
 
-std::vector<vertex> vertices{
-    vertex{glm::vec3{-0.5, -0.5, -0.5}},
-    vertex{glm::vec3{ 0.5, -0.5, -0.5}},
-    vertex{glm::vec3{-0.5, -0.5,  0.5}},
-    vertex{glm::vec3{ 0.5, -0.5,  0.5}},
-    vertex{glm::vec3{ 0.0,  0.5,  0.0}},
-};
-
-std::vector<GLuint> indices{
-    0,2,1,
-    1,2,3,
-    0,1,4,
-    1,3,4,
-    3,2,4,
-    2,0,4
-};
-
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
     switch (action)
     {
@@ -146,7 +129,7 @@ void App::run(){
     Debugger::print("running");
 
     std::shared_ptr<Shader> shader = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
-    std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>(vertices,indices);
+    std::shared_ptr<Mesh> mesh = assetManager.loadObj("../assets/meshes/cube.obj");
 
     glm::mat4 transform(1);
     transform = glm::translate(transform,glm::vec3(0,0,0));
