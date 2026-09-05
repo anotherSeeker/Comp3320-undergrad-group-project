@@ -15,7 +15,12 @@ Mesh::Mesh(std::vector<vertex> vertices,std::vector<GLuint> indices) : vertices(
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,indices.size() * sizeof(GLuint),indices.data(),GL_STATIC_DRAW);
 
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,sizeof(vertex),(void*)0);
+    glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,sizeof(vertex),(void*)offsetof(vertex,normal));
+    glVertexAttribPointer(2,2,GL_FLOAT,GL_FALSE,sizeof(vertex),(void*)offsetof(vertex,UV));
+    
     glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
 }
 
 void Mesh::draw(Shader &shader){
