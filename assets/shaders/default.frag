@@ -2,6 +2,9 @@
 in vec3 aPos;
 out vec4 fragColour;
 
-void main(){
-    fragColour = vec4(1.0,1.0,1.0,1.0);
+in vec2 frag_UV;
+in vec3 frag_Normal;
+
+void main() {
+    fragColour = vec4(frag_Normal * 0.5 + 0.5, 1.0);
 }
