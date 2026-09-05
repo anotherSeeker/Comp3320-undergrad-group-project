@@ -31,7 +31,7 @@ void Renderer::submit(std::shared_ptr<Mesh> mesh,std::shared_ptr<Shader> shader,
 void Renderer::begin(int32_t width,int32_t height){
     this->width = width;
     this->height = height;
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glViewport(0,0,width,height);
 }
 
