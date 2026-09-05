@@ -153,21 +153,21 @@ void App::run(){
 
     auto object = scene.createObject(mesh,shader,transform);
 
-    //scene.setRotation(object,glm::quat(glm::vec3(0,3.149526 /2 ,0)));
+    float angle = glm::radians(0.0f);
 
     double previous = glfwGetTime();
 
     glClearColor(0.39,0.58,0.93,1.0);
-
     renderer.viewLookAt(glm::vec3(0,0,5),glm::vec3(0,0,0));
 
     while(!glfwWindowShouldClose(window.windowObject)){
 
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - previous;
-        transform = glm::rotate(transform,glm::radians(50.0f * static_cast<float>(deltaTime)),glm::vec3(0.0f,1.0f,0.0f));
-
         previous = currentTime;
+
+        scene.setRotation(object,glm::quat(glm::vec3(0,angle,0)));
+        angle += glm::radians(50.0f * static_cast<float>(deltaTime));
 
         Debugger::incrementFrame();
         

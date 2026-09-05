@@ -40,9 +40,9 @@ void SceneGraph::setRotation(entt::entity entity,glm::quat rotation){
     auto rotationMatrix = glm::mat4_cast(rotation);
 
     auto &transformComp = ECSregistry.get<TransformComponent>(entity);
+    transformComp.transform[0] = rotationMatrix[0];
     transformComp.transform[1] = rotationMatrix[1];
     transformComp.transform[2] = rotationMatrix[2];
-    transformComp.transform[3] = rotationMatrix[3];
 }
 
 void SceneGraph::setPosition(entt::entity entity,glm::vec3 position){
@@ -51,5 +51,5 @@ void SceneGraph::setPosition(entt::entity entity,glm::vec3 position){
     }
 
     auto &transformComp = ECSregistry.get<TransformComponent>(entity);
-    transformComp.transform[4] = glm::vec4(position,1);
+    transformComp.transform[3] = glm::vec4(position,1);
 }
