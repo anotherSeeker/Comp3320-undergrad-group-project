@@ -96,6 +96,7 @@ bool App::init(int32_t width,int32_t height,const char* title){
     Debugger::init();
     Debugger::print("init");
     glViewport(0,0,width,height);
+    glEnable(GL_DEPTH_TEST);
 
     EventManager::createObserver("KeyPress",SK_EVENT_KEY_PRESS);
     EventManager::createObserver("KeyLifted",SK_EVENT_KEY_LIFTED);
@@ -129,12 +130,17 @@ void App::run(){
     Debugger::print("running");
 
     std::shared_ptr<Shader> shader = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
-    std::shared_ptr<Mesh> mesh = assetManager.loadObj("../assets/meshes/cube.obj");
+
+    std::shared_ptr<Mesh> cube = assetManager.loadObj("../assets/meshes/cube.obj");
+    std::shared_ptr<Mesh> suzanne = assetManager.loadObj("../assets/meshes/suzanne.obj");
+    std::shared_ptr<Mesh> uvsphere = assetManager.loadObj("../assets/meshes/uvsphere.obj");
 
     glm::mat4 transform(1);
     transform = glm::translate(transform,glm::vec3(0,0,0));
 
-    auto object = scene.createObject(mesh,shader,transform);
+    auto objectA = scene.createObject(suzanne,shader,transform);
+    auto objectB = scene.createObject(uvsphere,shader,glm::translate(transform,glm::vec3(4,0,0)));
+    auto objectC = scene.createObject(cube,shader,glm::translate(transform,glm::vec3(8,0,0)));
 
     float angle = glm::radians(0.0f);
 
@@ -149,7 +155,10 @@ void App::run(){
         double deltaTime = currentTime - previous;
         previous = currentTime;
 
-        scene.setRotation(object,glm::quat(glm::vec3(0,angle,0)));
+        scene.setRotation(objectA,glm::quat(glm::vec3(0,angle,0)));
+        scene.setRotation(objectB,glm::quat(glm::vec3(0,angle,0)));
+        scene.setRotation(objectC,glm::quat(glm::vec3(0,angle,0)));
+
         angle += glm::radians(50.0f * static_cast<float>(deltaTime));
 
         Debugger::incrementFrame();
