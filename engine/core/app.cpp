@@ -129,11 +129,11 @@ bool App::init(int32_t width,int32_t height,const char* title){
 void App::run(){
     Debugger::print("running");
 
-    AssetHandle shaderAsset = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
+    SK_ASSET_HANDLE shaderAsset = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
 
-    AssetHandle cubeAsset = assetManager.loadObj("../assets/meshes/cube.obj");
-    AssetHandle suzanneAsset = assetManager.loadObj("../assets/meshes/suzanne.obj");
-    AssetHandle uvsphereAsset = assetManager.loadObj("../assets/meshes/uvsphere.obj");
+    SK_ASSET_HANDLE cubeAsset = assetManager.loadObj("../assets/meshes/cube.obj");
+    SK_ASSET_HANDLE suzanneAsset = assetManager.loadObj("../assets/meshes/suzanne.obj");
+    SK_ASSET_HANDLE uvsphereAsset = assetManager.loadObj("../assets/meshes/uvsphere.obj");
 
     std::shared_ptr<Shader> shader = assetManager.getShader(shaderAsset);
 

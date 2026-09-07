@@ -52,7 +52,7 @@ std::string loadFile(std::string filePath){
     return stream.str();
 }
 
-AssetHandle AssetManager::loadShader(const char* vertexFilePath,const char* fragmentFilePath){
+SK_ASSET_HANDLE AssetManager::loadShader(const char* vertexFilePath,const char* fragmentFilePath){
     int assetID = std::hash<std::string>{}(std::string(vertexFilePath).append(fragmentFilePath));
 
     std::string vertexSource = loadFile(vertexFilePath);
@@ -69,7 +69,7 @@ AssetHandle AssetManager::loadShader(const char* vertexFilePath,const char* frag
     return {assetID};
 }
 
-AssetHandle AssetManager::loadObj(const char* FilePath){
+SK_ASSET_HANDLE AssetManager::loadObj(const char* FilePath){
     int assetID = std::hash<std::string>{}(FilePath);
 
     tinyobj::attrib_t attribute;
@@ -134,13 +134,13 @@ AssetHandle AssetManager::loadObj(const char* FilePath){
 }
 
 
-std::shared_ptr<Shader> AssetManager::getShader(AssetHandle handle){
+std::shared_ptr<Shader> AssetManager::getShader(SK_ASSET_HANDLE handle){
     assert(shaderCache.contains(handle.ID));
 
     return shaderCache.at(handle.ID);
 }
 
-std::shared_ptr<Mesh> AssetManager::getMesh(AssetHandle handle){
+std::shared_ptr<Mesh> AssetManager::getMesh(SK_ASSET_HANDLE handle){
     assert(meshCache.contains(handle.ID));
 
     return meshCache.at(handle.ID);
