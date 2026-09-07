@@ -17,9 +17,8 @@ struct Window{
 class App{
     private:
     Window window;
-    SceneGraph scene;
     public:
-
+    SceneGraph scene;
     AssetManager assetManager;
     Renderer renderer;
 
