@@ -62,3 +62,11 @@ SK_ENTITY skCreateObject(SK_ASSET meshHandle,SK_ASSET shaderHandle){
 
     return {static_cast<int>(entity)};
 }
+
+void skMoveObject(SK_ENTITY object,float x,float y,float z){
+    app.scene.setPosition(static_cast<entt::entity>(object.ID),glm::vec3(x,y,z));
+}
+
+void skRotateObject(SK_ENTITY object,float x,float y,float z){
+    app.scene.setRotation(static_cast<entt::entity>(object.ID),glm::quat(glm::vec3(x,y,z)));
+}

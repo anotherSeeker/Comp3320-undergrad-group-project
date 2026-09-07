@@ -19,4 +19,7 @@ extern "C" {
     __declspec(dllexport) SK_ASSET skLoadMesh(const char* filePath);
 
     __declspec(dllexport) SK_ENTITY skCreateObject(SK_ASSET mesh,SK_ASSET shader);
+
+    __declspec(dllexport) void skMoveObject(SK_ENTITY object,float x,float y,float z);
+    __declspec(dllexport) void skRotateObject(SK_ENTITY object,float x,float y,float z);
 }
