@@ -129,11 +129,17 @@ bool App::init(int32_t width,int32_t height,const char* title){
 void App::run(){
     Debugger::print("running");
 
-    std::shared_ptr<Shader> shader = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
+    AssetHandle shaderAsset = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
 
-    std::shared_ptr<Mesh> cube = assetManager.loadObj("../assets/meshes/cube.obj");
-    std::shared_ptr<Mesh> suzanne = assetManager.loadObj("../assets/meshes/suzanne.obj");
-    std::shared_ptr<Mesh> uvsphere = assetManager.loadObj("../assets/meshes/uvsphere.obj");
+    AssetHandle cubeAsset = assetManager.loadObj("../assets/meshes/cube.obj");
+    AssetHandle suzanneAsset = assetManager.loadObj("../assets/meshes/suzanne.obj");
+    AssetHandle uvsphereAsset = assetManager.loadObj("../assets/meshes/uvsphere.obj");
+
+    std::shared_ptr<Shader> shader = assetManager.getShader(shaderAsset);
+
+    std::shared_ptr<Mesh> cube = assetManager.getMesh(cubeAsset);
+    std::shared_ptr<Mesh> suzanne = assetManager.getMesh(suzanneAsset);
+    std::shared_ptr<Mesh> uvsphere = assetManager.getMesh(uvsphereAsset);
 
     glm::mat4 transform(1);
     transform = glm::translate(transform,glm::vec3(0,0,0));
@@ -181,6 +187,8 @@ void App::run(){
 
 App::~App(){
     Debugger::print("finished");
+
+    assetManager.unloadAll();
 
     glfwDestroyWindow(window.windowObject);
     glfwTerminate();

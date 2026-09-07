@@ -9,12 +9,22 @@
 #include "../renderer/mesh.hpp"
 #include "../renderer/shader.hpp"
 
+struct AssetHandle{
+    int ID;
+};
+
 class AssetManager{
-    std::unordered_map<std::string,std::weak_ptr<Mesh>> meshCache;
-    std::unordered_map<std::string,std::weak_ptr<Shader>> shaderCache;
+    std::unordered_map<int,std::shared_ptr<Mesh>> meshCache;
+    std::unordered_map<int,std::shared_ptr<Shader>> shaderCache;
 
     public:
 
-    std::shared_ptr<Shader> loadShader(const char* vertexFilePath,const char* fragmentFilePath);
-    std::shared_ptr<Mesh> loadObj(const char* FilePath);
+    AssetHandle loadShader(const char* vertexFilePath,const char* fragmentFilePath);
+    AssetHandle loadObj(const char* FilePath);
+
+    std::shared_ptr<Shader> getShader(AssetHandle handle);
+    std::shared_ptr<Mesh> getMesh(AssetHandle handle);
+
+    void unloadAll();
+
 };
