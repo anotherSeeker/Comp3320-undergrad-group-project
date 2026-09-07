@@ -44,3 +44,11 @@ void skMoveView(float x,float y,float z){
 void skRotateView(float x,float y,float z){
     app.renderer.rotateView(glm::vec3(x,y,z));
 }
+
+SK_ASSET_HANDLE skLoadShader(const char* vertexFilePath,const char* fragmentFilePath){
+    return app.assetManager.loadShader(vertexFilePath,fragmentFilePath);
+}
+
+SK_ASSET_HANDLE skLoadMesh(const char* filepath){
+    return app.assetManager.loadObj(filepath);
+}
