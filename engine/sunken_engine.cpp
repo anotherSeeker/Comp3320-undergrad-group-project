@@ -45,10 +45,20 @@ void skRotateView(float x,float y,float z){
     app.renderer.rotateView(glm::vec3(x,y,z));
 }
 
-SK_ASSET_HANDLE skLoadShader(const char* vertexFilePath,const char* fragmentFilePath){
+SK_ASSET skLoadShader(const char* vertexFilePath,const char* fragmentFilePath){
     return app.assetManager.loadShader(vertexFilePath,fragmentFilePath);
 }
 
-SK_ASSET_HANDLE skLoadMesh(const char* filepath){
+SK_ASSET skLoadMesh(const char* filepath){
     return app.assetManager.loadObj(filepath);
+}
+
+SK_ENTITY skCreateObject(SK_ASSET meshHandle,SK_ASSET shaderHandle){
+
+    auto mesh = app.assetManager.getMesh(meshHandle);
+    auto shader = app.assetManager.getShader(shaderHandle);
+
+    entt::entity entity = app.scene.createObject(mesh,shader,glm::mat4(1.0f));
+
+    return {static_cast<int>(entity)};
 }

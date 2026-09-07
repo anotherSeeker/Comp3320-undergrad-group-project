@@ -1,7 +1,7 @@
 #include "./core/events/event_structs.hpp"
 #include "./core/events/event_enums.hpp"
 
-#include "./core/asset_handle.h"
+#include "./core/handles.h"
 
 extern "C" {
     __declspec(dllexport) bool skInit();
@@ -15,8 +15,8 @@ extern "C" {
     __declspec(dllexport) void skMoveView(float x,float y,float z);
     __declspec(dllexport) void skRotateView(float x,float y,float z);
 
-    __declspec(dllexport) SK_ASSET_HANDLE skLoadShader(const char* vertexFilePath,const char* fragmentFilePath);
-    __declspec(dllexport) SK_ASSET_HANDLE skLoadMesh(const char* filePath);
+    __declspec(dllexport) SK_ASSET skLoadShader(const char* vertexFilePath,const char* fragmentFilePath);
+    __declspec(dllexport) SK_ASSET skLoadMesh(const char* filePath);
 
-    __declspec(dllexport) SK_ASSET_HANDLE skCreateObject(SK_ASSET_HANDLE mesh,SK_ASSET_HANDLE shader);
+    __declspec(dllexport) SK_ENTITY skCreateObject(SK_ASSET mesh,SK_ASSET shader);
 }

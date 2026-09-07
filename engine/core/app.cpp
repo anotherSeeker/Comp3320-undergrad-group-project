@@ -129,27 +129,6 @@ bool App::init(int32_t width,int32_t height,const char* title){
 void App::run(){
     Debugger::print("running");
 
-    SK_ASSET_HANDLE shaderAsset = assetManager.loadShader("../assets/shaders/default.vert","../assets/shaders/default.frag");
-
-    SK_ASSET_HANDLE cubeAsset = assetManager.loadObj("../assets/meshes/cube.obj");
-    SK_ASSET_HANDLE suzanneAsset = assetManager.loadObj("../assets/meshes/suzanne.obj");
-    SK_ASSET_HANDLE uvsphereAsset = assetManager.loadObj("../assets/meshes/uvsphere.obj");
-
-    std::shared_ptr<Shader> shader = assetManager.getShader(shaderAsset);
-
-    std::shared_ptr<Mesh> cube = assetManager.getMesh(cubeAsset);
-    std::shared_ptr<Mesh> suzanne = assetManager.getMesh(suzanneAsset);
-    std::shared_ptr<Mesh> uvsphere = assetManager.getMesh(uvsphereAsset);
-
-    glm::mat4 transform(1);
-    transform = glm::translate(transform,glm::vec3(0,0,0));
-
-    auto objectA = scene.createObject(suzanne,shader,transform);
-    auto objectB = scene.createObject(uvsphere,shader,glm::translate(transform,glm::vec3(4,0,0)));
-    auto objectC = scene.createObject(cube,shader,glm::translate(transform,glm::vec3(8,0,0)));
-
-    float angle = glm::radians(0.0f);
-
     double previous = glfwGetTime();
 
     glClearColor(0.39,0.58,0.93,1.0);
@@ -160,12 +139,6 @@ void App::run(){
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - previous;
         previous = currentTime;
-
-        scene.setRotation(objectA,glm::quat(glm::vec3(0,angle,0)));
-        scene.setRotation(objectB,glm::quat(glm::vec3(0,angle,0)));
-        scene.setRotation(objectC,glm::quat(glm::vec3(0,angle,0)));
-
-        angle += glm::radians(50.0f * static_cast<float>(deltaTime));
 
         Debugger::incrementFrame();
         
