@@ -9,7 +9,7 @@
 #include "../renderer/mesh.hpp"
 #include "../renderer/shader.hpp"
 
-#include "asset_handle.h"
+#include "handles.h"
 
 class AssetManager{
     std::unordered_map<int,std::shared_ptr<Mesh>> meshCache;
@@ -17,11 +17,11 @@ class AssetManager{
 
     public:
 
-    SK_ASSET_HANDLE loadShader(const char* vertexFilePath,const char* fragmentFilePath);
-    SK_ASSET_HANDLE loadObj(const char* FilePath);
+    SK_ASSET loadShader(const char* vertexFilePath,const char* fragmentFilePath);
+    SK_ASSET loadObj(const char* FilePath);
 
-    std::shared_ptr<Shader> getShader(SK_ASSET_HANDLE handle);
-    std::shared_ptr<Mesh> getMesh(SK_ASSET_HANDLE handle);
+    std::shared_ptr<Shader> getShader(SK_ASSET handle);
+    std::shared_ptr<Mesh> getMesh(SK_ASSET handle);
 
     void unloadAll();
 };
