@@ -1,31 +1,27 @@
-use mlua::{IntoLua, Lua};
+use mlua::IntoLua;
 use std::ffi;
-use std::io::Read;
-
-use std::fs;
+use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
 
-use std::collections::HashMap;
+mod runtime;
+
+static RUNTIME: LazyLock<Mutex<runtime::Runtime>> =
+    LazyLock::new(|| Mutex::new(runtime::Runtime::new()));
 
 include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
 
-static LUAU_VM: LazyLock<Lua> = LazyLock::new(|| Lua::new());
-static CALLBACK_COUNT: LazyLock<Mutex<i32>> = LazyLock::new(|| Mutex::new(0));
-
-static CALLBACKS: LazyLock<Mutex<HashMap<i32, mlua::RegistryKey>>> = LazyLock::new(|| {
-    let callback_hashmap = HashMap::new();
-    Mutex::new(callback_hashmap)
-});
-
 extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_void) {
-    let map = CALLBACKS.lock().unwrap();
+    let runtime = RUNTIME.lock().unwrap();
+    let state = runtime.state.lock().unwrap();
+    let callbacks = &state.callbacks;
 
-    if !map.contains_key(&callback) {
+    if !callbacks.contains_key(&callback) {
         return;
     }
 
-    let reg_key = map.get(&callback).unwrap();
-    let event_fn = LUAU_VM
+    let reg_key = callbacks.get(&callback).unwrap();
+    let event_fn = runtime
+        .vm
         .registry_value::<mlua::Function>(reg_key)
         .expect(format!("Could not find callback for event {}", callback).as_str());
 
@@ -36,7 +32,7 @@ extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_voi
         };
 
         let mut args = mlua::MultiValue::new();
-        args.push_back(key.into_lua(&LUAU_VM).unwrap());
+        args.push_back(key.into_lua(&runtime.vm).unwrap());
 
         event_fn.call::<()>(args).expect("Event errored");
     } else if event_id as u32 == SK_EVENT_PRERENDER {
@@ -45,13 +41,14 @@ extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_voi
             *key_ptr
         };
 
-        let reg_key = map.get(&callback).unwrap();
-        let event_fn = LUAU_VM
+        let reg_key = callbacks.get(&callback).unwrap();
+        let event_fn = runtime
+            .vm
             .registry_value::<mlua::Function>(reg_key)
             .expect(format!("Could not find callback for event {}", callback).as_str());
 
         let mut args = mlua::MultiValue::new();
-        args.push_back(dt.into_lua(&LUAU_VM).unwrap());
+        args.push_back(dt.into_lua(&runtime.vm).unwrap());
 
         event_fn.call::<()>(args).expect("Event errored");
     } else if event_id as u32 == SK_EVENT_MOUSE_PRESS || event_id as u32 == SK_EVENT_MOUSE_LIFTED {
@@ -60,13 +57,14 @@ extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_voi
             *key_ptr
         };
 
-        let reg_key = map.get(&callback).unwrap();
-        let event_fn = LUAU_VM
+        let reg_key = callbacks.get(&callback).unwrap();
+        let event_fn = runtime
+            .vm
             .registry_value::<mlua::Function>(reg_key)
             .expect(format!("Could not find callback for event {}", callback).as_str());
 
         let mut args = mlua::MultiValue::new();
-        args.push_back(mousebutton.into_lua(&LUAU_VM).unwrap());
+        args.push_back(mousebutton.into_lua(&runtime.vm).unwrap());
 
         event_fn.call::<()>(args).expect("Event errored");
     } else if event_id as u32 == SK_EVENT_MOUSE_MOVE {
@@ -75,113 +73,20 @@ extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_voi
             *key_ptr
         };
 
-        let reg_key = map.get(&callback).unwrap();
-        let event_fn = LUAU_VM
+        let reg_key = callbacks.get(&callback).unwrap();
+        let event_fn = runtime
+            .vm
             .registry_value::<mlua::Function>(reg_key)
             .expect(format!("Could not find callback for event {}", callback).as_str());
 
         let mut args = mlua::MultiValue::new();
-        args.push_back(mouse_data.mouseX.into_lua(&LUAU_VM).unwrap());
-        args.push_back(mouse_data.mouseY.into_lua(&LUAU_VM).unwrap());
-        args.push_back(mouse_data.deltaX.into_lua(&LUAU_VM).unwrap());
-        args.push_back(mouse_data.deltaY.into_lua(&LUAU_VM).unwrap());
+        args.push_back(mouse_data.mouseX.into_lua(&runtime.vm).unwrap());
+        args.push_back(mouse_data.mouseY.into_lua(&runtime.vm).unwrap());
+        args.push_back(mouse_data.deltaX.into_lua(&runtime.vm).unwrap());
+        args.push_back(mouse_data.deltaY.into_lua(&runtime.vm).unwrap());
 
         event_fn.call::<()>(args).expect("Event errored");
     }
-}
-
-fn read_file(path: &str) -> String {
-    let mut file = fs::File::open(path).unwrap();
-    let mut contents = String::new();
-
-    file.read_to_string(&mut contents).unwrap();
-    contents
-}
-
-fn register_callback(arg_fn: mlua::Function) -> Result<(), Box<dyn std::error::Error>> {
-    let key = LUAU_VM.create_registry_value(arg_fn)?;
-    let mut map = CALLBACKS.lock().unwrap();
-
-    let callback_count = CALLBACK_COUNT.lock().unwrap();
-
-    map.insert(*callback_count, key);
-
-    Ok(())
-}
-
-fn create_event_fn(event_name: &str) -> Result<mlua::Function, Box<dyn std::error::Error>> {
-    let eventbinding = ffi::CString::new(event_name).unwrap();
-
-    let event_fn = LUAU_VM.create_function(move |_, arg_fn: mlua::Function| {
-        register_callback(arg_fn).unwrap();
-        let mut callback_count = CALLBACK_COUNT.lock().unwrap();
-
-        unsafe {
-            skListen(eventbinding.as_ptr(), *callback_count);
-        }
-
-        *callback_count += 1;
-
-        Ok(())
-    })?;
-
-    Ok(event_fn)
-}
-
-fn get_enum_table() -> Result<mlua::Table, mlua::error::Error> {
-    let chunk = LUAU_VM.load(read_file("./enum.luau"));
-
-    let value = chunk.eval::<mlua::Table>()?;
-
-    Ok(value)
-}
-
-fn setup_luau() -> Result<(), Box<dyn std::error::Error>> {
-    let chunk = LUAU_VM.load(read_file("./demo_scripts/demo.luau"));
-
-    let globals = LUAU_VM.globals();
-    let camera_lib = LUAU_VM.create_table()?;
-
-    let camera_move_fn = LUAU_VM.create_function(|_, (x, y, z): (f32, f32, f32)| {
-        unsafe {
-            skMoveView(x, y, z);
-        }
-        Ok(())
-    })?;
-
-    let camera_rot_fn = LUAU_VM.create_function(|_, (x, y, z): (f32, f32, f32)| {
-        unsafe {
-            skRotateView(x, y, z);
-        }
-        Ok(())
-    })?;
-
-    camera_lib.set("move", camera_move_fn)?;
-    camera_lib.set("rotate", camera_rot_fn)?;
-
-    globals.set("camera", camera_lib)?;
-
-    let input_lib = LUAU_VM.create_table()?;
-
-    input_lib.set("connectKeyPress", create_event_fn("KeyPress")?)?;
-    input_lib.set("connectKeyLifted", create_event_fn("KeyLifted")?)?;
-
-    input_lib.set("connectMousePress", create_event_fn("MousePress")?)?;
-    input_lib.set("connectMouseLifted", create_event_fn("MouseLifted")?)?;
-    input_lib.set("connectMouseMove", create_event_fn("MouseMove")?)?;
-
-    globals.set("input", input_lib)?;
-
-    let runservice_lib = LUAU_VM.create_table()?;
-    runservice_lib.set("connectPreRender", create_event_fn("PreRender")?)?;
-
-    globals.set("runservice", runservice_lib)?;
-
-    globals.set("enum", get_enum_table()?)?;
-
-    chunk.exec()?;
-
-    Ok(())
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -190,9 +95,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             return Ok(());
         };
 
+        let vertpath_string =
+            std::ffi::CString::new(String::from("../assets/shaders/default.vert"))?;
+        let fragpath_string =
+            std::ffi::CString::new(String::from("../assets/shaders/default.frag"))?;
+
+        let spherepath_string =
+            std::ffi::CString::new(String::from("../assets/meshes/uvsphere.obj"))?;
+        let suzannepath_string =
+            std::ffi::CString::new(String::from("../assets/meshes/suzanne.obj"))?;
+
+        let shader: SK_ASSET = skLoadShader(vertpath_string.as_ptr(), fragpath_string.as_ptr());
+        let sphere: SK_ASSET = skLoadMesh(spherepath_string.as_ptr());
+        let suzanne: SK_ASSET = skLoadMesh(suzannepath_string.as_ptr());
+
+        let A: SK_ENTITY = skCreateObject(sphere, shader);
+        let B: SK_ENTITY = skCreateObject(suzanne, shader);
+
+        skMoveObject(B, 5.0, 0.0, 0.0);
+
         skEventCallback(Some(event_callback));
 
-        setup_luau()?;
+        let mut runtime = RUNTIME.lock().unwrap();
+        runtime.run(PathBuf::from("./demo_scripts/demo.luau"));
 
         skRun();
     }
