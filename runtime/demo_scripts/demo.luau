@@ -16,6 +16,15 @@ local speed = MIN_SPEED
 local a =
 	createObject("../assets/meshes/uvsphere.obj", "../assets/shaders/default.vert", "../assets/shaders/default.frag")
 
+local b =
+	createObject("../assets/meshes/suzanne.obj", "../assets/shaders/default.vert", "../assets/shaders/default.frag")
+
+b:setPosition(vector.create(5, 0, 0))
+
+local x_vector = vector.create(1, 0, 0)
+local y_vector = vector.create(0, 1, 0)
+local z_vector = vector.create(0, 0, 1)
+
 local position = vector.create(0, 0, 0)
 
 input.connectKeyPress(function(keycode: number)
@@ -35,22 +44,22 @@ runservice.connectPreRender(function(dt: number)
 
 	if key_map[enum.keycode.W] then
 		camera.move(0, 0, -speed * dt)
-		position = vector.create(position.x, position.y, position.z - dt * speed)
+		position += z_vector * -speed * dt
 	end
 
 	if key_map[enum.keycode.S] then
 		camera.move(0, 0, speed * dt)
-		position = vector.create(position.x, position.y, position.z + dt * speed)
+		position += z_vector * speed * dt
 	end
 
 	if key_map[enum.keycode.A] then
 		camera.move(-speed * dt, 0, 0)
-		position = vector.create(position.x - dt * speed, position.y, position.z)
+		position += x_vector * -speed * dt
 	end
 
 	if key_map[enum.keycode.D] then
 		camera.move(speed * dt, 0, 0)
-		position = vector.create(position.x + dt * speed, position.y, position.z)
+		position += x_vector * speed * dt
 	end
 
 	a:setPosition(position)
