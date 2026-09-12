@@ -13,6 +13,9 @@ const key_map = {
 local mousedown = false
 local speed = MIN_SPEED
 
+local a =
+	createObject("../assets/meshes/uvsphere.obj", "../assets/shaders/default.vert", "../assets/shaders/default.frag")
+
 input.connectKeyPress(function(keycode: number)
 	if key_map[keycode] ~= nil then
 		key_map[keycode] = true

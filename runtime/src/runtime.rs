@@ -4,7 +4,8 @@ use std::io::Read;
 use std::sync::{Arc, Mutex};
 use std::{collections::HashMap, path::PathBuf};
 
-use crate::bindings::bindings::{skListen, skMoveView, skRotateView};
+use crate::bindings::bindings::{skListen, skLoadMesh, skLoadShader, skMoveView, skRotateView};
+use crate::ud_object;
 pub struct RuntimeState {
     pub callback_count: i32,
     pub callbacks: HashMap<i32, mlua::RegistryKey>,
@@ -117,6 +118,28 @@ impl Runtime {
 
         globals.set("runservice", runservice_lib)?;
 
+        let object_fn = self.vm.create_function(
+            |_,
+             (mesh_luapath, vertex_luapath, fragment_luapath): (
+                mlua::LuaString,
+                mlua::LuaString,
+                mlua::LuaString,
+            )| {
+                let mesh_path = std::ffi::CString::new(mesh_luapath.to_string_lossy()).unwrap();
+                let vertex_path = std::ffi::CString::new(vertex_luapath.to_string_lossy()).unwrap();
+                let fragment_path =
+                    std::ffi::CString::new(fragment_luapath.to_string_lossy()).unwrap();
+
+                unsafe {
+                    let mesh_handle = skLoadMesh(mesh_path.as_ptr());
+                    let shader_handle = skLoadShader(vertex_path.as_ptr(), fragment_path.as_ptr());
+
+                    Ok(ud_object::UDObject::new(mesh_handle, shader_handle))
+                }
+            },
+        )?;
+
+        globals.set("createObject", object_fn)?;
         globals.set("enum", self.get_enum_table()?)?;
         Ok(())
     }

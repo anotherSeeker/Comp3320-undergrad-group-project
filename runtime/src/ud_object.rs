@@ -1,19 +1,33 @@
-use crate::bindings::bindings::{SK_ENTITY, skMoveObject, skRotateObject};
+use crate::bindings::bindings::{
+    SK_ASSET, SK_ENTITY, skCreateObject, skMoveObject, skRotateObject,
+};
 
-struct UDObject {
+pub struct UDObject {
     handle: SK_ENTITY,
+    _mesh: SK_ASSET,
+    _shader: SK_ASSET,
+}
+
+impl UDObject {
+    pub fn new(mesh_handle: SK_ASSET, shader_handle: SK_ASSET) -> Self {
+        Self {
+            handle: unsafe { skCreateObject(mesh_handle, shader_handle) },
+            _mesh: mesh_handle,
+            _shader: shader_handle,
+        }
+    }
 }
 
 impl mlua::UserData for UDObject {
     fn add_methods<M: mlua::prelude::LuaUserDataMethods<Self>>(methods: &mut M) {
-        methods.add_method("move", |_, this, (x, y, z): (f32, f32, f32)| {
+        methods.add_method("setPosition", |_, this, (x, y, z): (f32, f32, f32)| {
             unsafe {
                 skMoveObject(this.handle, x, y, z);
             }
             Ok(())
         });
 
-        methods.add_method("rotate", |_, this, (x, y, z): (f32, f32, f32)| {
+        methods.add_method("setOrientation", |_, this, (x, y, z): (f32, f32, f32)| {
             unsafe {
                 skRotateObject(this.handle, x, y, z);
             }

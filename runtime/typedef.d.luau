@@ -15,6 +15,13 @@ declare runservice : {
 	connectPreRender: ((dt : number) -> ()) -> (),
 }
 
+export type Object = {
+	setPosition : (self: Object,number,number,number) -> (),
+	setOrientation : (self: Object,number,number,number) -> (),
+}
+
+declare createObject : (string,string,string) -> Object
+
 declare enum : {
 	keycode : {
 		["SPACE"]: number,

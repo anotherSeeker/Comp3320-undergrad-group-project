@@ -11,9 +11,8 @@ static RUNTIME: LazyLock<Mutex<runtime::Runtime>> =
 
 mod bindings;
 use bindings::bindings::{
-    SK_ASSET, SK_ENTITY, SK_EVENT_KEY_LIFTED, SK_EVENT_KEY_PRESS, SK_EVENT_MOUSE_LIFTED,
-    SK_EVENT_MOUSE_MOVE, SK_EVENT_MOUSE_PRESS, SK_EVENT_PRERENDER, SK_MOUSE_MOVE_EVENT,
-    skCreateObject, skEventCallback, skInit, skLoadMesh, skLoadShader, skMoveObject, skRun,
+    SK_EVENT_KEY_LIFTED, SK_EVENT_KEY_PRESS, SK_EVENT_MOUSE_LIFTED, SK_EVENT_MOUSE_MOVE,
+    SK_EVENT_MOUSE_PRESS, SK_EVENT_PRERENDER, SK_MOUSE_MOVE_EVENT, skEventCallback, skInit, skRun,
 };
 
 extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_void) {
@@ -100,25 +99,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         if !skInit() {
             return Ok(());
         };
-
-        let vertpath_string =
-            std::ffi::CString::new(String::from("../assets/shaders/default.vert"))?;
-        let fragpath_string =
-            std::ffi::CString::new(String::from("../assets/shaders/default.frag"))?;
-
-        let spherepath_string =
-            std::ffi::CString::new(String::from("../assets/meshes/uvsphere.obj"))?;
-        let suzannepath_string =
-            std::ffi::CString::new(String::from("../assets/meshes/suzanne.obj"))?;
-
-        let shader: SK_ASSET = skLoadShader(vertpath_string.as_ptr(), fragpath_string.as_ptr());
-        let sphere: SK_ASSET = skLoadMesh(spherepath_string.as_ptr());
-        let suzanne: SK_ASSET = skLoadMesh(suzannepath_string.as_ptr());
-
-        let a: SK_ENTITY = skCreateObject(sphere, shader);
-        let b: SK_ENTITY = skCreateObject(suzanne, shader);
-
-        skMoveObject(b, 5.0, 0.0, 0.0);
 
         skEventCallback(Some(event_callback));
         let mut runtime = RUNTIME.lock().unwrap();
