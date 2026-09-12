@@ -102,7 +102,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         skEventCallback(Some(event_callback));
         let mut runtime = RUNTIME.lock().unwrap();
-        runtime.run(PathBuf::from("./demo_scripts/demo.luau"));
+        runtime.run(&PathBuf::from("./demo_scripts/demo.luau"));
 
         std::mem::drop(runtime);
         skRun();

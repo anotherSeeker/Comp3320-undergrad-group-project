@@ -16,7 +16,7 @@ pub struct Runtime {
     pub state: Arc<Mutex<RuntimeState>>,
 }
 
-fn read_file(path: &str) -> String {
+fn read_file(path: &PathBuf) -> String {
     let mut file = fs::File::open(path).unwrap();
     let mut contents = String::new();
 
@@ -72,7 +72,7 @@ impl Runtime {
     }
 
     fn get_enum_table(&self) -> Result<mlua::Table, mlua::error::Error> {
-        let chunk = self.vm.load(read_file("./enum.luau"));
+        let chunk = self.vm.load(read_file(&PathBuf::from("./enum.luau")));
 
         let value = chunk.eval::<mlua::Table>()?;
 
@@ -144,8 +144,8 @@ impl Runtime {
         Ok(())
     }
 
-    pub fn run(&mut self, _path: PathBuf) {
-        let chunk = self.vm.load(read_file("./demo_scripts/demo.luau"));
+    pub fn run(&mut self, path: &PathBuf) {
+        let chunk = self.vm.load(read_file(path));
 
         match chunk.exec() {
             Ok(_) => println!("Successfully ran script"),
