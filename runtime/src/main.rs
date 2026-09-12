@@ -8,7 +8,12 @@ mod runtime;
 static RUNTIME: LazyLock<Mutex<runtime::Runtime>> =
     LazyLock::new(|| Mutex::new(runtime::Runtime::new()));
 
-include!(concat!(env!("OUT_DIR"), "/bindings.rs"));
+mod bindings;
+use bindings::bindings::{
+    SK_ASSET, SK_ENTITY, SK_EVENT_KEY_LIFTED, SK_EVENT_KEY_PRESS, SK_EVENT_MOUSE_LIFTED,
+    SK_EVENT_MOUSE_MOVE, SK_EVENT_MOUSE_PRESS, SK_EVENT_PRERENDER, SK_MOUSE_MOVE_EVENT,
+    skCreateObject, skEventCallback, skInit, skLoadMesh, skLoadShader, skMoveObject, skRun,
+};
 
 extern "C" fn event_callback(callback: i32, event_id: i32, data: *mut ffi::c_void) {
     let runtime = RUNTIME.lock().unwrap();
@@ -109,10 +114,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let sphere: SK_ASSET = skLoadMesh(spherepath_string.as_ptr());
         let suzanne: SK_ASSET = skLoadMesh(suzannepath_string.as_ptr());
 
-        let A: SK_ENTITY = skCreateObject(sphere, shader);
-        let B: SK_ENTITY = skCreateObject(suzanne, shader);
+        let a: SK_ENTITY = skCreateObject(sphere, shader);
+        let b: SK_ENTITY = skCreateObject(suzanne, shader);
 
-        skMoveObject(B, 5.0, 0.0, 0.0);
+        skMoveObject(b, 5.0, 0.0, 0.0);
 
         skEventCallback(Some(event_callback));
         let mut runtime = RUNTIME.lock().unwrap();
