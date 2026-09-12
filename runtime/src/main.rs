@@ -115,10 +115,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         skMoveObject(B, 5.0, 0.0, 0.0);
 
         skEventCallback(Some(event_callback));
-
         let mut runtime = RUNTIME.lock().unwrap();
         runtime.run(PathBuf::from("./demo_scripts/demo.luau"));
 
+        std::mem::drop(runtime);
         skRun();
     }
 
