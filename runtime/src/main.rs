@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::sync::{LazyLock, Mutex};
 
 mod runtime;
+mod ud_object;
 
 static RUNTIME: LazyLock<Mutex<runtime::Runtime>> =
     LazyLock::new(|| Mutex::new(runtime::Runtime::new()));
