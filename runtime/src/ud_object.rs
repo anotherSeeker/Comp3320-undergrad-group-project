@@ -20,16 +20,21 @@ impl UDObject {
 
 impl mlua::UserData for UDObject {
     fn add_methods<M: mlua::prelude::LuaUserDataMethods<Self>>(methods: &mut M) {
-        methods.add_method("setPosition", |_, this, (x, y, z): (f32, f32, f32)| {
+        methods.add_method("setPosition", |_, this, position: mlua::Vector| {
             unsafe {
-                skMoveObject(this.handle, x, y, z);
+                skMoveObject(this.handle, position.x(), position.y(), position.z());
             }
             Ok(())
         });
 
-        methods.add_method("setOrientation", |_, this, (x, y, z): (f32, f32, f32)| {
+        methods.add_method("setOrientation", |_, this, orientation: mlua::Vector| {
             unsafe {
-                skRotateObject(this.handle, x, y, z);
+                skRotateObject(
+                    this.handle,
+                    orientation.x(),
+                    orientation.y(),
+                    orientation.z(),
+                );
             }
             Ok(())
         });

@@ -16,6 +16,8 @@ local speed = MIN_SPEED
 local a =
 	createObject("../assets/meshes/uvsphere.obj", "../assets/shaders/default.vert", "../assets/shaders/default.frag")
 
+local position = vector.create(0, 0, 0)
+
 input.connectKeyPress(function(keycode: number)
 	if key_map[keycode] ~= nil then
 		key_map[keycode] = true
@@ -33,27 +35,25 @@ runservice.connectPreRender(function(dt: number)
 
 	if key_map[enum.keycode.W] then
 		camera.move(0, 0, -speed * dt)
+		position = vector.create(position.x, position.y, position.z - dt * speed)
 	end
 
 	if key_map[enum.keycode.S] then
 		camera.move(0, 0, speed * dt)
+		position = vector.create(position.x, position.y, position.z + dt * speed)
 	end
 
 	if key_map[enum.keycode.A] then
 		camera.move(-speed * dt, 0, 0)
+		position = vector.create(position.x - dt * speed, position.y, position.z)
 	end
 
 	if key_map[enum.keycode.D] then
 		camera.move(speed * dt, 0, 0)
+		position = vector.create(position.x + dt * speed, position.y, position.z)
 	end
 
-	if key_map[enum.keycode.Q] then
-		camera.move(0, speed * dt, 0)
-	end
-
-	if key_map[enum.keycode.E] then
-		camera.move(0, -speed * dt, 0)
-	end
+	a:setPosition(position)
 end)
 
 input.connectMousePress(function(key: number)

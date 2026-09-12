@@ -16,8 +16,8 @@ declare runservice : {
 }
 
 export type Object = {
-	setPosition : (self: Object,number,number,number) -> (),
-	setOrientation : (self: Object,number,number,number) -> (),
+	setPosition : (self: Object,vector) -> (),
+	setOrientation : (self: Object,vector) -> (),
 }
 
 declare createObject : (string,string,string) -> Object

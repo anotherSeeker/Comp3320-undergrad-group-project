@@ -7,4 +7,9 @@ edition = "2024"
 bindgen = "0.72.1"
 
 [dependencies]
-mlua = { version = "0.12.0", features = ["luau-jit", "async", "send"] }
+mlua = { version = "0.12.0", features = [
+    "luau-jit",
+    "async",
+    "send",
+    "luau-vector4",
+] }
