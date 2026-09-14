@@ -1,8 +1,8 @@
-sandbox
 out
 build
 /engine/lib/vendor
 
 *.dll
 *.a
+*.exe
 target
