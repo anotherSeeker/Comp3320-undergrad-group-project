@@ -10,8 +10,12 @@ const key_map = {
 	[enum.keycode.LEFT_SHIFT] = false,
 }
 
+camera.setPosition(0, 0, 5)
+camera.setOrientation(math.pi, 0, 0)
+
 local mousedown = false
 local speed = MIN_SPEED
+local angle = 0
 
 local a =
 	createObject("../assets/meshes/uvsphere.obj", "../assets/shaders/default.vert", "../assets/shaders/default.frag")

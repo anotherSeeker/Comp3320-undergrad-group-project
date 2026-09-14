@@ -12,6 +12,9 @@ extern "C" {
 
     __declspec(dllexport) void skLog(const char* message);
 
+    __declspec(dllexport) void skSetViewPosition(float x,float y,float z);
+    __declspec(dllexport) void skSetViewOrientation(float x,float y,float z);
+
     __declspec(dllexport) void skMoveView(float x,float y,float z);
     __declspec(dllexport) void skRotateView(float x,float y,float z);
 

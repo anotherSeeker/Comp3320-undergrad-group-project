@@ -45,6 +45,14 @@ void skRotateView(float x,float y,float z){
     app.renderer.rotateView(glm::vec3(x,y,z));
 }
 
+void skSetViewPosition(float x,float y,float z){
+    app.renderer.setViewPosition(glm::vec3(x,y,z));
+}
+
+void skSetViewOrientation(float x,float y,float z){
+    app.renderer.setViewOrientation(glm::vec3(x,y,z));
+}
+
 SK_ASSET skLoadShader(const char* vertexFilePath,const char* fragmentFilePath){
     return app.assetManager.loadShader(vertexFilePath,fragmentFilePath);
 }
