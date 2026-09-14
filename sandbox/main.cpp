@@ -51,7 +51,7 @@ void EventCallback(int callback,int eventID,void* data){
         if(!mouseheld) return;
         SK_MOUSE_MOVE_EVENT mouseData = *static_cast<SK_MOUSE_MOVE_EVENT*>(data);
          
-        skRotateView(-mouseData.deltaX * 0.005,-mouseData.deltaY * 0.005,0);
+        skRotateView(-mouseData.deltaY * 0.005,-mouseData.deltaX * 0.005,0);
     } else if (eventID == SK_EVENT_PRERENDER){
         double deltaTime = *static_cast<double*>(data);
  

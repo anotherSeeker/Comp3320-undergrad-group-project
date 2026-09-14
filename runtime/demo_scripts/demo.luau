@@ -11,7 +11,7 @@ const key_map = {
 }
 
 camera.setPosition(0, 0, 5)
-camera.setOrientation(math.pi, 0, 0)
+camera.setOrientation(0, math.pi, 0)
 
 local mousedown = false
 local speed = MIN_SPEED
@@ -97,5 +97,5 @@ input.connectMouseMove(function(mouseX: number, mouseY: number, deltaX: number, 
 		return
 	end
 
-	camera.rotate(-deltaX * 0.005, -deltaY * 0.005, 0)
+	camera.rotate(-deltaY * 0.005, -deltaX * 0.005, 0)
 end)
