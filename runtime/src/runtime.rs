@@ -85,31 +85,37 @@ impl Runtime {
         let globals = self.vm.globals();
         let camera_lib = self.vm.create_table()?;
 
-        let camera_move_fn = self.vm.create_function(|_, (x, y, z): (f32, f32, f32)| {
+        let camera_move_fn = self
+            .vm
+            .create_function(|_, position_offset: mlua::Vector| {
+                unsafe {
+                    skMoveView(
+                        position_offset.x(),
+                        position_offset.y(),
+                        position_offset.z(),
+                    );
+                }
+                Ok(())
+            })?;
+
+        let camera_rot_fn = self.vm.create_function(|_, rotation: mlua::Vector| {
             unsafe {
-                skMoveView(x, y, z);
+                skRotateView(rotation.x(), rotation.y(), rotation.z());
             }
             Ok(())
         })?;
 
-        let camera_rot_fn = self.vm.create_function(|_, (x, y, z): (f32, f32, f32)| {
+        let camera_set_pos_fn = self.vm.create_function(|_, position: mlua::Vector| {
             unsafe {
-                skRotateView(x, y, z);
-            }
-            Ok(())
-        })?;
-
-        let camera_set_pos_fn = self.vm.create_function(|_, (x, y, z): (f32, f32, f32)| {
-            unsafe {
-                skSetViewPosition(x, y, z);
+                skSetViewPosition(position.x(), position.y(), position.z());
             }
             Ok(())
         })?;
 
         let camera_set_orientation_fn =
-            self.vm.create_function(|_, (x, y, z): (f32, f32, f32)| {
+            self.vm.create_function(|_, orientation: mlua::Vector| {
                 unsafe {
-                    skSetViewOrientation(x, y, z);
+                    skSetViewOrientation(orientation.x(), orientation.y(), orientation.z());
                 }
                 Ok(())
             })?;

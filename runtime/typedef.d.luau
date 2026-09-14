@@ -1,8 +1,8 @@
 declare camera : {
-	move: (x: number, y: number, z: number) -> (),
-	rotate: (x: number, y: number, z: number) -> (),
-	setPosition: (x: number, y: number, z: number) -> (),
-	setOrientation: (x: number, y: number, z: number) -> (),
+	move: (offset: vector) -> (),
+	rotate: (offset: vector) -> (),
+	setPosition: (position: vector) -> (),
+	setOrientation: (orientation: vector) -> (),
 }
 
 declare input : {

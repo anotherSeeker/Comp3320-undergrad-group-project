@@ -1,3 +1,4 @@
+--!strict
 const MAX_SPEED = 10
 const MIN_SPEED = 2
 const key_map = {
@@ -10,8 +11,10 @@ const key_map = {
 	[enum.keycode.LEFT_SHIFT] = false,
 }
 
-camera.setPosition(0, 0, 5)
-camera.setOrientation(0, math.pi, 0)
+local camera_offset = vector.create(0, 1.5, 5)
+
+camera.setPosition(camera_offset)
+camera.setOrientation(vector.create(0, math.pi, 0))
 
 local mousedown = false
 local speed = MIN_SPEED
@@ -30,6 +33,7 @@ local x_vector = vector.create(1, 0, 0)
 local y_vector = vector.create(0, 1, 0)
 local z_vector = vector.create(0, 0, 1)
 
+local position = vector.zero
 local orientation = vector.zero
 
 input.connectKeyPress(function(keycode: number)
@@ -48,34 +52,41 @@ runservice.connectPreRender(function(dt: number)
 	speed = key_map[enum.keycode.LEFT_SHIFT] == true and MIN_SPEED or MAX_SPEED
 
 	if key_map[enum.keycode.W] then
-		camera.move(0, 0, -speed * dt)
+		-- camera.move(0, 0, -speed * dt)
 		orientation += x_vector * -speed * dt
+		position += z_vector * -speed * dt
 	end
 
 	if key_map[enum.keycode.S] then
-		camera.move(0, 0, speed * dt)
+		-- camera.move(0, 0, speed * dt)
 		orientation += x_vector * speed * dt
+		position += z_vector * speed * dt
 	end
 
 	if key_map[enum.keycode.A] then
-		camera.move(-speed * dt, 0, 0)
-		orientation += z_vector * -speed * dt
+		-- camera.move(-speed * dt, 0, 0)
+		orientation += z_vector * speed * dt
+		position += x_vector * -speed * dt
 	end
 
 	if key_map[enum.keycode.D] then
-		camera.move(speed * dt, 0, 0)
-		orientation += z_vector * speed * dt
+		-- camera.move(speed * dt, 0, 0)
+		orientation += z_vector * -speed * dt
+		position += x_vector * speed * dt
 	end
 
-	if key_map[enum.keycode.Q] then
-		camera.move(0, -speed * dt, 0)
-	end
+	-- if key_map[enum.keycode.Q] then
+	-- 	camera.move(0, -speed * dt, 0)
+	-- end
 
-	if key_map[enum.keycode.E] then
-		camera.move(0, speed * dt, 0)
-	end
+	-- if key_map[enum.keycode.E] then
+	-- 	camera.move(0, speed * dt, 0)
+	-- end
 
+	a:setPosition(position)
 	a:setOrientation(orientation)
+
+	camera.setPosition(position + camera_offset)
 end)
 
 input.connectMousePress(function(key: number)
@@ -97,5 +108,5 @@ input.connectMouseMove(function(mouseX: number, mouseY: number, deltaX: number, 
 		return
 	end
 
-	camera.rotate(-deltaY * 0.005, -deltaX * 0.005, 0)
+	camera.rotate(vector.create(-deltaY * 0.005, -deltaX * 0.005, 0))
 end)
