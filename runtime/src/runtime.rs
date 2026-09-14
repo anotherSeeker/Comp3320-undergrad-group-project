@@ -6,6 +6,7 @@ use std::{collections::HashMap, path::PathBuf};
 
 use crate::bindings::bindings::skSetViewOrientation;
 use crate::bindings::bindings::skSetViewPosition;
+use crate::bindings::bindings::skViewLookAt;
 use crate::bindings::bindings::{skListen, skLoadMesh, skLoadShader, skMoveView, skRotateView};
 use crate::ud_object;
 pub struct RuntimeState {
@@ -120,10 +121,27 @@ impl Runtime {
                 Ok(())
             })?;
 
+        let camera_lookat_fn =
+            self.vm
+                .create_function(|_, (origin, target): (mlua::Vector, mlua::Vector)| {
+                    unsafe {
+                        skViewLookAt(
+                            origin.x(),
+                            origin.y(),
+                            origin.z(),
+                            target.x(),
+                            target.y(),
+                            target.z(),
+                        );
+                    }
+                    Ok(())
+                })?;
+
         camera_lib.set("move", camera_move_fn)?;
         camera_lib.set("rotate", camera_rot_fn)?;
         camera_lib.set("setPosition", camera_set_pos_fn)?;
         camera_lib.set("setOrientation", camera_set_orientation_fn)?;
+        camera_lib.set("lookAt", camera_lookat_fn)?;
 
         globals.set("camera", camera_lib)?;
 

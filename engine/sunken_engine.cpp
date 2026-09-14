@@ -53,6 +53,10 @@ void skSetViewOrientation(float x,float y,float z){
     app.renderer.setViewOrientation(glm::vec3(x,y,z));
 }
 
+void skViewLookAt(float x0,float y0,float z0,float x1,float y1,float z1){
+    app.renderer.viewLookAt(glm::vec3(x0,y0,z0),glm::vec3(x1,y1,z1));
+}
+
 SK_ASSET skLoadShader(const char* vertexFilePath,const char* fragmentFilePath){
     return app.assetManager.loadShader(vertexFilePath,fragmentFilePath);
 }

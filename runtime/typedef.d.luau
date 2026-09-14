@@ -3,6 +3,7 @@ declare camera : {
 	rotate: (offset: vector) -> (),
 	setPosition: (position: vector) -> (),
 	setOrientation: (orientation: vector) -> (),
+	lookAt: (origin: vector,target: vector) -> (),
 }
 
 declare input : {

@@ -17,6 +17,8 @@ extern "C" {
 
     __declspec(dllexport) void skMoveView(float x,float y,float z);
     __declspec(dllexport) void skRotateView(float x,float y,float z);
+    
+    __declspec(dllexport) void skViewLookAt(float x0,float y0,float z0,float x1,float y1,float z1);
 
     __declspec(dllexport) SK_ASSET skLoadShader(const char* vertexFilePath,const char* fragmentFilePath);
     __declspec(dllexport) SK_ASSET skLoadMesh(const char* filePath);
