@@ -18,10 +18,10 @@ declare runservice : {
 	connectPreRender: ((dt : number) -> ()) -> (),
 }
 
-export type Object = {
-	setPosition : (self: Object,vector) -> (),
-	setOrientation : (self: Object,vector) -> (),
-}
+declare extern type Object with
+	function setPosition(self,position: vector)
+	function setOrientation(self,orientation: vector)
+end
 
 declare createObject : (string,string,string) -> Object
 
