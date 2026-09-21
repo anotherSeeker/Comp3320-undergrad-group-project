@@ -45,11 +45,17 @@ std::string loadFile(std::string filePath){
         return "";
     }
     
-    std::stringstream stream;
-    stream << file.rdbuf();
+    // implemented bug fix found by sol
+    // this should work now
+    auto fileSize = file.seekg(0,std::ios::end).tellg();
+    file.seekg(0, std::ios::beg);
+    std::string fileContents{};
+    fileContents.resize(fileSize);
+    file.read(fileContents.data(), fileSize);
+
     file.close();
 
-    return stream.str();
+    return fileContents;
 }
 
 SK_ASSET AssetManager::loadShader(const char* vertexFilePath,const char* fragmentFilePath){
