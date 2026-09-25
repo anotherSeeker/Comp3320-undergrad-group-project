@@ -1,4 +1,6 @@
-#version 460 core
+//#version 460 core
+#version 300 es
+
 in vec3 aPos;
 out vec4 fragColour;
 
